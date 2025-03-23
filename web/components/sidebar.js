@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -59,18 +58,22 @@ export default function Sidebar({ username, onLogout }) {
           {/* Navigation items */}
           <nav className="flex-grow py-4">
             <ul className="space-y-1">
-              {navItems.map((item) => (
-                <li key={item.path}>
-                  <Link 
-                    href={item.path} 
-                    className={`flex items-center px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 ${
-                      pathname === item.path ? 'bg-blue-50 text-blue-600 border-l-4 border-blue-600' : ''
-                    }`}
-                  >
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
+              {navItems.map((item) => {
+                const isActive = pathname === item.path;
+                return (
+                  <li key={item.path}>
+                    <Link 
+                      href={item.path} 
+                      prefetch={true} // Added prefetching
+                      className={`flex items-center px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 ${
+                        isActive ? 'bg-blue-50 text-blue-600 border-l-4 border-blue-600' : ''
+                      }`}
+                    >
+                      {item.name}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </nav>
 

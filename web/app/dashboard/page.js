@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { BarChart, Bar, LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
@@ -64,13 +64,15 @@ export default function Dashboard() {
     router.push('/');
   };
 
-  // Format data for charts - reversing the order to show chronologically
-  const revenueChartData = [...profitData]
-    .reverse()
-    .map(item => ({
-      name: item.date.substring(5), // Just show MM-DD
-      value: item.totalProfitUSD
-    }));
+  // Format data for charts - memoized to prevent recalculation
+  const revenueChartData = useMemo(() => {
+    return [...profitData]
+      .reverse()
+      .map(item => ({
+        name: item.date.substring(5), // Just show MM-DD
+        value: item.totalProfitUSD
+      }));
+  }, [profitData]);
 
   if (loading) {
     return (
