@@ -62,11 +62,13 @@ export default function Dashboard() {
     router.push('/');
   };
 
-  // Format data for charts
-  const revenueChartData = profitData.map(item => ({
-    name: item.date.substring(5), // Just show MM-DD
-    value: item.totalProfitUSD
-  }));
+  // Format data for charts - reversing the order to show chronologically
+  const revenueChartData = [...profitData]
+    .reverse()
+    .map(item => ({
+      name: item.date.substring(5), // Just show MM-DD
+      value: item.totalProfitUSD
+    }));
 
   if (loading) {
     return (
@@ -210,31 +212,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Daily Revenue Bar Chart */}
-        <div className="bg-gray-900 border border-gray-800 rounded-lg p-5 mt-8">
-          <h3 className="text-lg font-semibold mb-4">Daily Revenue Breakdown</h3>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={revenueChartData}
-                margin={{ top: 5, right: 5, left: 0, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-                <XAxis dataKey="name" stroke="#666" />
-                <YAxis stroke="#666" />
-                <Tooltip 
-                  formatter={(value) => [`$${value.toFixed(2)}`, 'Revenue']}
-                  contentStyle={{ 
-                    backgroundColor: '#1f2937', 
-                    borderColor: '#374151',
-                    color: 'white'
-                  }} 
-                />
-                <Bar dataKey="value" fill="#8884d8" name="Revenue (USD)" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+        {/* Removed daily revenue breakdown as requested */}
       </main>
     </div>
   );
