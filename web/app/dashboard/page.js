@@ -83,9 +83,9 @@ export default function Dashboard() {
       {/* Navbar */}
       <nav className="bg-white border-b border-gray-200 py-3 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-3">
-          <h1 className="text-xl md:text-2xl font-bold text-gray-800">BetSync Admin Panel</h1>
+          <h1 className="text-xl md:text-2xl text-gray-800">BetSync Admin Panel</h1>
           <div className="flex items-center gap-4">
-            <span className="text-gray-700">Welcome, {username}</span>
+            <span className="text-gray-700 font-thin">Welcome, {username}</span>
             <button 
               onClick={handleLogout}
               className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
@@ -98,7 +98,7 @@ export default function Dashboard() {
 
       {/* Main content */}
       <main className="max-w-7xl mx-auto px-3 py-6">
-        <h2 className="text-xl font-bold mb-6">Dashboard Overview</h2>
+        <h2 className="text-xl mb-6">Dashboard Overview</h2>
 
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
