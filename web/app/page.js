@@ -40,7 +40,7 @@ export default function Home() {
       {/* Navbar */}
       <nav className="bg-white border-b border-gray-200 py-3 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center px-3">
-          <h1 className="text-xl md:text-2xl font-bold text-gray-800">
+          <h1 className="text-lg md:text-xl font-bold text-gray-800">
             BetSync Admin Panel
           </h1>
         </div>
@@ -50,7 +50,7 @@ export default function Home() {
       <div className="flex items-center justify-center min-h-[calc(100vh-54px)] px-4">
         <div className="bg-white rounded-lg shadow-md p-6 md:p-8 w-full max-w-sm border border-gray-200">
           <div className="text-center mb-6">
-            <h2 className="text-xl font-bold mb-1 text-gray-800">Admin Login</h2>
+            <h2 className="text-lg font-bold mb-1 text-gray-800">Admin Login</h2>
             <p className="text-gray-600 text-sm">Enter your credentials to access the panel</p>
           </div>
           

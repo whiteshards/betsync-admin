@@ -98,23 +98,23 @@ export default function Dashboard() {
 
       {/* Main content */}
       <main className="max-w-7xl mx-auto px-3 py-6">
-        <h2 className="text-2xl font-bold mb-6">Dashboard Overview</h2>
+        <h2 className="text-xl font-bold mb-6">Dashboard Overview</h2>
 
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-gray-900 border border-gray-800 rounded-lg p-5">
-            <div className="text-gray-400 text-sm mb-1">Total Revenue</div>
-            <div className="text-2xl font-bold">${totalRevenue}</div>
+          <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+            <div className="text-gray-600 text-sm mb-1">Total Revenue</div>
+            <div className="text-lg font-bold">${totalRevenue}</div>
           </div>
 
-          <div className="bg-gray-900 border border-gray-800 rounded-lg p-5">
-            <div className="text-gray-400 text-sm mb-1">Average Daily Profit</div>
-            <div className="text-2xl font-bold">${averageProfit}</div>
+          <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+            <div className="text-gray-600 text-sm mb-1">Average Daily Profit</div>
+            <div className="text-lg font-bold">${averageProfit}</div>
           </div>
 
-          <div className="bg-gray-900 border border-gray-800 rounded-lg p-5">
-            <div className="text-gray-400 text-sm mb-1">Total Days Recorded</div>
-            <div className="text-2xl font-bold">{profitData.length}</div>
+          <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+            <div className="text-gray-600 text-sm mb-1">Total Days Recorded</div>
+            <div className="text-lg font-bold">{profitData.length}</div>
           </div>
         </div>
 
