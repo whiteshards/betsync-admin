@@ -1,4 +1,3 @@
-/** @type {import('next').NextConfig} */
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -12,9 +11,5 @@ const nextConfig = {
     removeConsole: process.env.NODE_ENV === 'production',
   },
 };
-
-export default nextConfig;
-
-const nextConfig = {};
 
 export default nextConfig;
