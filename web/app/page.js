@@ -36,11 +36,11 @@ export default function Home() {
   };
 
   return (
-    <div className={`min-h-screen bg-black text-white ${montserrat.variable}`}>
+    <div className="min-h-screen bg-white text-gray-800">
       {/* Navbar */}
-      <nav className="bg-gray-950 border-b border-white/10 py-3">
+      <nav className="bg-white border-b border-gray-200 py-3 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center px-3">
-          <h1 className="text-xl md:text-2xl font-bold text-white">
+          <h1 className="text-xl md:text-2xl font-bold text-gray-800">
             BetSync Admin Panel
           </h1>
         </div>
@@ -48,21 +48,21 @@ export default function Home() {
 
       {/* Login form */}
       <div className="flex items-center justify-center min-h-[calc(100vh-54px)] px-4">
-        <div className="bg-gray-900 rounded-lg shadow-xl p-6 md:p-8 w-full max-w-sm border border-gray-800">
+        <div className="bg-white rounded-lg shadow-md p-6 md:p-8 w-full max-w-sm border border-gray-200">
           <div className="text-center mb-6">
-            <h2 className="text-xl font-bold mb-1">Admin Login</h2>
-            <p className="text-gray-300 text-sm">Enter your credentials to access the panel</p>
+            <h2 className="text-xl font-bold mb-1 text-gray-800">Admin Login</h2>
+            <p className="text-gray-600 text-sm">Enter your credentials to access the panel</p>
           </div>
           
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="bg-red-900/30 border border-red-800 text-white px-3 py-2 rounded text-sm">
+              <div className="bg-red-50 border border-red-200 text-red-600 px-3 py-2 rounded text-sm">
                 {error}
               </div>
             )}
             
             <div className="space-y-1">
-              <label htmlFor="username" className="block text-sm font-medium text-white">
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
                 Username
               </label>
               <input
@@ -70,13 +70,13 @@ export default function Home() {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-transparent transition-all text-white"
+                className="w-full bg-white border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent transition-all text-gray-800"
                 required
               />
             </div>
             
             <div className="space-y-1">
-              <label htmlFor="password" className="block text-sm font-medium text-white">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Password
               </label>
               <input
@@ -84,14 +84,14 @@ export default function Home() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-transparent transition-all text-white"
+                className="w-full bg-white border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent transition-all text-gray-800"
                 required
               />
             </div>
             
             <button
               type="submit"
-              className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded font-medium transition-all"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-medium transition-all"
             >
               Sign In
             </button>
