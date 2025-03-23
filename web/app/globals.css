@@ -13,7 +13,7 @@
   --card-bg: #ffffff;
   --card-border: #e0e0e0;
   --radius: 0.625rem;
-  --background: #f8f9fa;
+  --background: #ffffff;
   --foreground: #000000;
   --card: #ffffff;
   --card-foreground: #000000;
@@ -34,6 +34,7 @@
   --chart-3: #ffc658;
   --chart-4: #ff8042;
   --chart-5: #0088FE;
+  --nav-border: #e0e0e0;
 }
 
 body {
