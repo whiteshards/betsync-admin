@@ -29,7 +29,7 @@ export default function Home() {
       {/* Navbar */}
       <nav className="bg-gray-950 border-b border-white/10 py-3">
         <div className="max-w-7xl mx-auto flex items-center px-3">
-          <h1 className="text-xl md:text-2xl font-bold text-white">
+          <h1 className="text-xl font-bold text-white">
             BetSync Admin Panel
           </h1>
         </div>
