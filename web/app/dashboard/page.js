@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
-import { BarChart, Bar, LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { BarChart, Bar, LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#0088FE'];
 
@@ -79,7 +79,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="min-h-screen bg-gray-950 text-black"> {/* Changed text color to black */}
       {/* Navbar */}
       <nav className="bg-gray-900 border-b border-white/10 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-3">
@@ -119,9 +119,9 @@ export default function Dashboard() {
         </div>
 
         {/* Main Chart */}
-        <div className="bg-gray-900 border border-gray-800 rounded-lg p-5 mb-8">
+        <div className="bg-white border border-gray-200 rounded-lg p-5 mb-8"> {/* Changed background to white */}
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Daily Revenue (USD)</h3>
+            <h3 className="text-lg font-semibold text-black">Daily Revenue (USD)</h3> {/* Changed text color to black */}
             <div className="text-sm text-gray-400">
               {profitData.length > 0 && 
                 `${profitData[profitData.length-1]?.date} - ${profitData[0]?.date}`
@@ -133,26 +133,27 @@ export default function Dashboard() {
               <AreaChart data={revenueChartData} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
                 <defs>
                   <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#5f6cff" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#5f6cff" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-                <XAxis dataKey="name" stroke="#666" />
-                <YAxis stroke="#666" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                <XAxis dataKey="name" stroke="#333" />
+                <YAxis stroke="#333" />
                 <Tooltip 
                   formatter={(value) => [`$${value.toFixed(2)}`, 'Revenue']}
                   contentStyle={{ 
-                    backgroundColor: '#1f2937', 
-                    borderColor: '#374151',
-                    color: 'white'
+                    backgroundColor: 'white', 
+                    border: '1px solid #e0e0e0',
+                    color: 'black'
                   }} 
                 />
                 <Area 
                   type="monotone" 
                   dataKey="value" 
-                  stroke="#8884d8" 
-                  fillOpacity={1} 
+                  stroke="#5f6cff" 
+                  strokeWidth={2}
+                  fillOpacity={0.3} 
                   fill="url(#colorRevenue)" 
                   name="Revenue (USD)"
                 />
@@ -162,8 +163,8 @@ export default function Dashboard() {
         </div>
 
         {/* Top Dates By Revenue */}
-        <div className="bg-gray-900 border border-gray-800 rounded-lg p-5">
-          <h3 className="text-lg font-semibold mb-4">Top Days by Revenue</h3>
+        <div className="bg-white border border-gray-200 rounded-lg p-5"> {/* Changed background to white */}
+          <h3 className="text-lg font-semibold text-black mb-4">Top Days by Revenue</h3> {/* Changed text color to black */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
@@ -185,11 +186,12 @@ export default function Dashboard() {
                   <Tooltip 
                     formatter={(value) => [`$${value.toFixed(2)}`, 'Revenue']}
                     contentStyle={{ 
-                      backgroundColor: '#1f2937', 
-                      borderColor: '#374151',
-                      color: 'white'
+                      backgroundColor: 'white', 
+                      border: '1px solid #e0e0e0',
+                      color: 'black'
                     }} 
                   />
+                  <Legend />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -204,7 +206,7 @@ export default function Dashboard() {
                       ></span>
                       <span>{date.date}</span>
                     </div>
-                    <span className="font-semibold">${date.totalProfitUSD.toFixed(2)}</span>
+                    <span className="font-semibold text-black">${date.totalProfitUSD.toFixed(2)}</span> {/* Changed text color to black */}
                   </li>
                 ))}
               </ul>
