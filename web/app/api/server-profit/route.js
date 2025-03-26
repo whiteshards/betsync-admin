@@ -43,11 +43,11 @@ export async function GET() {
     // Convert to array and sort by total profit
     const processedData = Array.from(serverMap.values()).sort((a, b) => b.totalProfit - a.totalProfit);
     
-    // Convert tokens to USD (1 token = 0.0212 USD)
+    // Keep raw profit values
     processedData.forEach(server => {
-      server.totalProfitUSD = parseFloat((server.totalProfit * 0.0212).toFixed(2));
+      server.totalProfitUSD = server.totalProfit;
       server.records.forEach(record => {
-        record.profitUSD = parseFloat((record.profit * 0.0212).toFixed(2));
+        record.profitUSD = record.profit;
       });
     });
     

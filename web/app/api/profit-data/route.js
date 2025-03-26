@@ -13,11 +13,11 @@ export async function GET() {
       .sort({ date: -1 })
       .toArray();
     
-    // Convert tokens to USD (1 token = 0.0212 USD)
+    // Keep raw profit values
     const processedData = profitData.map(item => ({
       date: item.date,
       totalProfitTokens: item.total_profit,
-      totalProfitUSD: parseFloat((item.total_profit * 0.0212).toFixed(2))
+      totalProfitUSD: item.total_profit
     }));
     
     return NextResponse.json({ data: processedData });
