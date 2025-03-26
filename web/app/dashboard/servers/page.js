@@ -78,7 +78,7 @@ export default function ServersPage() {
       <Sidebar username={username} onLogout={handleLogout} />
       
       <main className="flex-1 md:ml-64 p-6">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto responsive-container">
           {selectedServer ? (
             // Server detail view
             <div>
@@ -184,8 +184,8 @@ export default function ServersPage() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                 <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
                   <h2 className="text-lg font-semibold mb-4">Server Profit Distribution</h2>
-                  <div className="h-80">
-                    <ResponsiveContainer width="100%" height="100%">
+                  <div className="h-80 max-w-full">
+                    <ResponsiveContainer width="99%" height="100%">
                       <PieChart>
                         <Pie
                           data={serverPieData}
@@ -248,7 +248,7 @@ export default function ServersPage() {
                     Add Server
                   </button>
                 </div>
-                <div className="overflow-x-auto">
+                <div className="servers-table-container overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                       <tr>
