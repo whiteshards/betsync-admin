@@ -78,13 +78,13 @@ export default function ServersPage() {
       <Sidebar username={username} onLogout={handleLogout} />
       
       <main className="flex-1 md:ml-64 p-6">
-        <div className="max-w-4xl mx-auto responsive-container">
+        <div className="max-w-3xl mx-auto responsive-container text-center">
           {selectedServer ? (
             // Server detail view
-            <div>
+            <div className="centered-container">
               <button 
                 onClick={handleBackClick}
-                className="mb-6 flex items-center text-blue-600 hover:text-blue-700"
+                className="mb-6 flex items-center text-blue-600 hover:text-blue-700 self-start"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
@@ -92,63 +92,36 @@ export default function ServersPage() {
                 Back to Servers
               </button>
               
-              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 mb-6">
-                <h2 className="text-xl font-semibold mb-2">{selectedServer.serverName}</h2>
-                <div className="text-lg mb-4">
+              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 mb-6 w-full">
+                <h2 className="text-xl font-semibold mb-4 text-center">{selectedServer.serverName}</h2>
+                <div className="text-lg mb-6 text-center">
                   Total Profit: <span className="font-semibold text-blue-600">${selectedServer.totalProfitUSD.toFixed(2)}</span>
                 </div>
-                
-                <h3 className="text-lg font-semibold mb-4">Daily Profit</h3>
-                <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={[
-                        { date: 'Jan 01', profit: selectedServer.totalProfitUSD * 0.7 },
-                        { date: 'Jan 02', profit: selectedServer.totalProfitUSD * 0.5 },
-                        { date: 'Jan 03', profit: selectedServer.totalProfitUSD * 0.8 },
-                        { date: 'Jan 04', profit: selectedServer.totalProfitUSD * 0.6 },
-                        { date: 'Jan 05', profit: selectedServer.totalProfitUSD * 0.9 },
-                        { date: 'Jan 06', profit: selectedServer.totalProfitUSD * 1.0 },
-                        { date: 'Jan 07', profit: selectedServer.totalProfitUSD * 0.8 },
-                      ]}
-                      margin={{ top: 10, right: 30, left: 0, bottom: 20 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                      <XAxis dataKey="date" axisLine={false} tickLine={false} />
-                      <YAxis axisLine={false} tickLine={false} />
-                      <Tooltip
-                        formatter={(value) => [`$${value.toFixed(2)}`, 'Profit']}
-                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
-                      />
-                      <Bar dataKey="profit" fill="#5f6cff" radius={[4, 4, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
+                      </div>
               
-              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-                <h3 className="text-lg font-semibold mb-4">Server Details</h3>
+              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 w-full">
+                <h3 className="text-lg font-semibold mb-4 text-center">Server Details</h3>
                 <table className="min-w-full divide-y divide-gray-200">
                   <tbody className="divide-y divide-gray-200">
                     <tr>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Server Name</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{selectedServer.serverName}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/2 text-right">Server Name</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/2 text-left">{selectedServer.serverName}</td>
                     </tr>
                     <tr>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Total Profit</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${selectedServer.totalProfitUSD.toFixed(2)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/2 text-right">Total Profit</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/2 text-left">${selectedServer.totalProfitUSD.toFixed(2)}</td>
                     </tr>
                     <tr>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Active Users</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{Math.floor(selectedServer.totalProfitUSD * 3)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/2 text-right">Active Users</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/2 text-left">{Math.floor(selectedServer.totalProfitUSD * 3)}</td>
                     </tr>
                     <tr>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Region</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">US-East</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/2 text-right">Region</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/2 text-left">US-East</td>
                     </tr>
                     <tr>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Status</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/2 text-right">Status</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-left w-1/2">
                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                           Active
                         </span>
