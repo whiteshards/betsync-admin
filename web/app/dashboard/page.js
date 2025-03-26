@@ -75,7 +75,7 @@ export default function Dashboard() {
 
   return (
     <div className="flex h-screen bg-white">
-      <Sidebar />
+      <Sidebar username={username} />
       <main className="flex-1 overflow-y-auto bg-white">
         <div className="px-8 py-6">
           <h1 className="text-2xl font-light text-gray-800 mb-8">Welcome Back {username}</h1>
