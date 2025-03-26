@@ -47,13 +47,16 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
+  margin: 0 auto;
 }
 
 .responsive-container {
   width: 100%;
+  max-width: 1200px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 0 auto;
 }
 
 /* Ensure pie charts are responsive */

@@ -80,19 +80,19 @@ export default function ServersPage() {
     <div className="min-h-screen bg-gray-50 flex">
       <Sidebar username={username} onLogout={handleLogout} />
 
-      <main className="flex-1 md:ml-64 p-6">
-        <div className="max-w-3xl mx-auto responsive-container">
+      <main className="flex-1 md:ml-64 p-6 flex flex-col items-center"> {/* Added flex-col and items-center */}
+        <div className="max-w-3xl mx-auto"> {/* Removed responsive-container */}
           {selectedServer ? (
             // Server detail view
-            <div className="centered-container">
+            <div className="w-full"> {/* Added w-full for better centering */}
               <button 
                 onClick={handleBackClick}
-                className="mb-6 flex items-center text-blue-600 hover:text-blue-700 self-start"
+                className="mb-6 flex items-center text-blue-600 hover:text-blue-700"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
                 </svg>
-                Back to Servers
+                Back
               </button>
 
               <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 mb-6 w-full">
@@ -136,8 +136,7 @@ export default function ServersPage() {
             </div>
           ) : (
             // Servers overview
-            <div className="w-full flex flex-col items-center">
-
+            <div className="w-full"> {/* Added w-full for better centering */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 {serverData.slice(0, 4).map((server, index) => (
                   <div key={index} className="bg-white rounded-lg p-6 shadow-sm cursor-pointer hover:shadow-md transition-shadow border border-gray-100" onClick={() => handleServerClick(server)}>
