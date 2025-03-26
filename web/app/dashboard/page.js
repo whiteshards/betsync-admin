@@ -42,7 +42,21 @@ export default function Dashboard() {
         setProfitData(data);
 
         // Calculate top dates by profit
-        const sortedDates = [...data].sort((a, b) => b.totalProfitUSD - a.totalProfitUSD);
+        const sortedDates = [...data]
+          .sort((a, b) => {
+            // First sort by profit (highest first)
+            if (b.totalProfitUSD !== a.totalProfitUSD) {
+              return b.totalProfitUSD - a.totalProfitUSD;
+            }
+            
+            // Then by date (most recent first) if profits are equal
+            const [aMonth, aDay, aYear] = a.date.split('/').map(Number);
+            const [bMonth, bDay, bYear] = b.date.split('/').map(Number);
+            
+            if (aYear !== bYear) return bYear - aYear;
+            if (aMonth !== bMonth) return bMonth - aMonth;
+            return bDay - aDay;
+          });
         setTopDates(sortedDates.slice(0, 5));
 
         // Calculate total revenue
@@ -106,7 +120,7 @@ export default function Dashboard() {
               </div>
               <div className="mt-6 mb-4"></div>
 
-              <div className="mb-6">
+              <div className="mb-6 flex justify-between items-center">
                 <select 
                   value={selectedView} 
                   onChange={handleViewChange}
@@ -116,6 +130,7 @@ export default function Dashboard() {
                   <option value="Weekly">Weekly</option>
                   <option value="Monthly">Monthly</option>
                 </select>
+                <span className="text-xs text-gray-500">Showing data in chronological order</span>
               </div>
 
               <div className="h-64">
