@@ -81,7 +81,7 @@ export default function ServersPage() {
       <Sidebar username={username} onLogout={handleLogout} />
 
       <main className="flex-1 md:ml-64 p-6">
-        <div className="max-w-3xl mx-auto responsive-container text-center">
+        <div className="max-w-3xl mx-auto responsive-container">
           {selectedServer ? (
             // Server detail view
             <div className="centered-container">
@@ -136,8 +136,7 @@ export default function ServersPage() {
             </div>
           ) : (
             // Servers overview
-            <div>
-              <h1 className="text-2xl font-bold mb-6">Server Management</h1>
+            <div className="w-full flex flex-col items-center">
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 {serverData.slice(0, 4).map((server, index) => (
