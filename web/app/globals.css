@@ -72,3 +72,29 @@ body {
 input, textarea, select {
   transition: all 0.2s ease;
 }
+
+
+/* Fix for servers page overflow */
+.overflow-x-auto {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* Make sure tables don't overflow their containers */
+table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+/* Add horizontal scrolling to mobile views */
+@media (max-width: 768px) {
+  .md\:pl-64 {
+    padding-left: 0;
+  }
+  
+  .container {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
