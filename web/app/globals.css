@@ -33,7 +33,19 @@
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
+    padding: 0 12px;
   }
+}
+
+/* Center content and improve spacing */
+.text-center {
+  text-align: center;
+}
+
+.centered-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* Ensure pie charts are responsive */

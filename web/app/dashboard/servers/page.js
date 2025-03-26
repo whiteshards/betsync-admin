@@ -78,7 +78,7 @@ export default function ServersPage() {
       <Sidebar username={username} onLogout={handleLogout} />
       
       <main className="flex-1 md:ml-64 p-6">
-        <div className="max-w-7xl mx-auto responsive-container">
+        <div className="max-w-4xl mx-auto responsive-container">
           {selectedServer ? (
             // Server detail view
             <div>
@@ -181,34 +181,10 @@ export default function ServersPage() {
                 ))}
               </div>
               
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              <div className="grid grid-cols-1 gap-6 mb-8">
+                {/* Top 5 Profitable Servers */}
                 <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-                  <h2 className="text-lg font-semibold mb-4">Server Profit Distribution</h2>
-                  <div className="h-80 max-w-full">
-                    <ResponsiveContainer width="99%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={serverPieData}
-                          cx="50%"
-                          cy="50%"
-                          labelLine={false}
-                          outerRadius={120}
-                          fill="#8884d8"
-                          dataKey="value"
-                          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                        >
-                          {serverPieData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                          ))}
-                        </Pie>
-                        <Tooltip formatter={(value) => [`$${value.toFixed(2)}`, 'Profit']} />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-                
-                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-                  <h2 className="text-lg font-semibold mb-4">Top 5 Servers</h2>
+                  <h2 className="text-lg font-semibold mb-4">Top 5 Profitable Servers</h2>
                   <div className="overflow-hidden">
                     <table className="min-w-full divide-y divide-gray-200">
                       <thead>
@@ -218,23 +194,64 @@ export default function ServersPage() {
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
-                        {serverData.slice(0, 5).map((server, index) => (
-                          <tr key={index} className="hover:bg-gray-50 cursor-pointer" onClick={() => handleServerClick(server)}>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex items-center">
-                                <div className="h-8 w-8 rounded-full flex items-center justify-center" style={{ backgroundColor: COLORS[index % COLORS.length] + '20' }}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" style={{ color: COLORS[index % COLORS.length] }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2" />
-                                  </svg>
+                        {serverData
+                          .filter(server => server.totalProfitUSD > 0)
+                          .sort((a, b) => b.totalProfitUSD - a.totalProfitUSD)
+                          .slice(0, 5)
+                          .map((server, index) => (
+                            <tr key={index} className="hover:bg-gray-50 cursor-pointer" onClick={() => handleServerClick(server)}>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="flex items-center">
+                                  <div className="h-8 w-8 rounded-full flex items-center justify-center" style={{ backgroundColor: COLORS[index % COLORS.length] + '20' }}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" style={{ color: COLORS[index % COLORS.length] }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2" />
+                                    </svg>
+                                  </div>
+                                  <div className="ml-4">
+                                    <div className="text-sm font-medium text-gray-900">{server.serverName}</div>
+                                  </div>
                                 </div>
-                                <div className="ml-4">
-                                  <div className="text-sm font-medium text-gray-900">{server.serverName}</div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">${server.totalProfitUSD.toFixed(2)}</td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Unprofitable Servers */}
+                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+                  <h2 className="text-lg font-semibold mb-4">Unprofitable Servers</h2>
+                  <div className="overflow-hidden">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead>
+                        <tr>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Server</th>
+                          <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Profit</th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {serverData
+                          .filter(server => server.totalProfitUSD <= 0)
+                          .sort((a, b) => a.totalProfitUSD - b.totalProfitUSD)
+                          .map((server, index) => (
+                            <tr key={index} className="hover:bg-gray-50 cursor-pointer" onClick={() => handleServerClick(server)}>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="flex items-center">
+                                  <div className="h-8 w-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#ff404020' }}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" style={{ color: '#ff4040' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2" />
+                                    </svg>
+                                  </div>
+                                  <div className="ml-4">
+                                    <div className="text-sm font-medium text-gray-900">{server.serverName}</div>
+                                  </div>
                                 </div>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">${server.totalProfitUSD.toFixed(2)}</td>
-                          </tr>
-                        ))}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-red-500">${server.totalProfitUSD.toFixed(2)}</td>
+                            </tr>
+                          ))}
                       </tbody>
                     </table>
                   </div>
