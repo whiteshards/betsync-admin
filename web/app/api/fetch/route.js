@@ -18,10 +18,17 @@ export async function GET(request) {
     const client = await clientPromise;
     const db = client.db("BetSync");
 
-    // Fetch data for the specific server
-    const server = await db.collection("servers").findOne({ 
-      server_id: serverId 
-    });
+    // Fetch data for the specific server - convert string to numeric ID if needed
+    let query = {};
+    
+    // Check if the server_id is numeric
+    if (!isNaN(serverId)) {
+      query.server_id = Number(serverId);
+    } else {
+      query.server_id = serverId;
+    }
+
+    const server = await db.collection("servers").findOne(query);
 
     if (!server) {
       return NextResponse.json(
@@ -30,12 +37,17 @@ export async function GET(request) {
       );
     }
 
+    // Calculate server's cut (30% of total profit)
+    const totalProfit = typeof server.total_profit === 'number' ? server.total_profit : parseFloat(server.total_profit);
+    const serverCut = totalProfit * 0.3;
+
     // Process the server data
     const processedData = {
       serverId: server.server_id.toString(),
       serverName: server.server_name,
-      totalProfit: server.total_profit,
-      totalProfitUSD: server.total_profit,
+      totalProfit: totalProfit,
+      totalProfitUSD: totalProfit,
+      serverCut: serverCut,
       giveawayChannel: server.giveaway_channel,
       whitelist: server.whitelisted_channels || [],
       region: "US-East", // Adding this for consistency with the UI

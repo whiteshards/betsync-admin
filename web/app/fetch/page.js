@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -9,24 +8,28 @@ export default function FetchPage() {
   const [serverData, setServerData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  
+
   const fetchServerData = async () => {
     if (!serverId.trim()) {
       setError('Please enter a server ID');
       return;
     }
-    
+
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await fetch(`/api/fetch?id=${encodeURIComponent(serverId)}`);
       const result = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(result.error || 'Failed to fetch server data');
       }
-      
+
+      // Calculate server's cut (30% of total profit)
+      const serverCut = result.data.totalProfitUSD ? result.data.totalProfitUSD * 0.3 : 0;
+      result.data.serverCut = serverCut;
+
       setServerData(result.data);
     } catch (err) {
       setError(err.message);
@@ -35,7 +38,7 @@ export default function FetchPage() {
       setLoading(false);
     }
   };
-  
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-3xl mx-auto">
@@ -43,7 +46,7 @@ export default function FetchPage() {
           <h1 className="text-2xl font-semibold text-gray-900">BetSync Server Lookup</h1>
           <Link href="/" className="text-blue-600 hover:text-blue-800">Back to Home</Link>
         </div>
-        
+
         <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 mb-6">
           <div className="flex flex-col md:flex-row gap-4">
             <input
@@ -61,22 +64,26 @@ export default function FetchPage() {
               {loading ? 'Loading...' : 'Fetch Server'}
             </button>
           </div>
-          
+
           {error && (
             <div className="mt-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
               {error}
             </div>
           )}
         </div>
-        
+
         {serverData && (
           <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
             <h2 className="text-xl font-semibold mb-4">{serverData.serverName}</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div className="bg-blue-50 p-4 rounded-lg">
                 <div className="text-sm text-gray-500">Total Profit</div>
-                <div className="text-lg font-semibold text-blue-600">${serverData.totalProfitUSD.toFixed(2)}</div>
+                <div className="text-lg font-semibold text-blue-600">${serverData.totalProfitUSD ? serverData.totalProfitUSD.toFixed(2) : '0.00'}</div>
+              </div>
+              <div className="bg-purple-50 p-4 rounded-lg">
+                <div className="text-sm text-gray-500">Server's Cut (30%)</div>
+                <div className="text-lg font-semibold text-purple-600">${serverData.serverCut ? serverData.serverCut.toFixed(2) : '0.00'}</div>
               </div>
               <div className="bg-green-50 p-4 rounded-lg">
                 <div className="text-sm text-gray-500">Status</div>
@@ -85,7 +92,7 @@ export default function FetchPage() {
                 </div>
               </div>
             </div>
-            
+
             <div className="overflow-hidden">
               <table className="min-w-full divide-y divide-gray-200">
                 <tbody className="divide-y divide-gray-200">
