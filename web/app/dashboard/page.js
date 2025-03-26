@@ -92,24 +92,25 @@ export default function Dashboard() {
 
                 <div className="w-full md:w-1/3 mb-4 md:mb-0 pr-4">
                   <div className="h-full">
-                    <h3 className="text-sm font-light text-gray-500 mb-1">Average Daily Income</h3>
-                    <p className="text-2xl font-light">${formatCurrency(averageProfit)}</p>
+                    <h3 className="text-sm font-medium text-gray-500 mb-1">Average Daily Income</h3>
+                    <p className="text-2xl font-medium">${formatCurrency(averageProfit)}</p>
                   </div>
                 </div>
 
                 <div className="w-full md:w-1/3 mb-4 md:mb-0">
                   <div className="h-full">
-                    <h3 className="text-sm font-light text-gray-500 mb-1">Total Days Recorded</h3>
-                    <p className="text-2xl font-light">{profitData.length}</p>
+                    <h3 className="text-sm font-medium text-gray-500 mb-1">Total Days Recorded</h3>
+                    <p className="text-2xl font-medium">{profitData.length}</p>
                   </div>
                 </div>
               </div>
+              <div className="mt-6 mb-4"></div>
 
-              <div className="mb-4">
+              <div className="mb-6">
                 <select 
                   value={selectedView} 
                   onChange={handleViewChange}
-                  className="border border-gray-200 text-sm rounded-md px-3 py-1 font-light bg-white"
+                  className="border border-gray-200 text-sm rounded-md px-3 py-1 font-medium bg-white"
                 >
                   <option value="Daily">Daily</option>
                   <option value="Weekly">Weekly</option>
