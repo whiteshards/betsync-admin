@@ -1,10 +1,9 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
-import { BarChart, Bar, LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import Sidebar from '@/components/sidebar';
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#0088FE'];
@@ -80,15 +79,10 @@ export default function Dashboard() {
     );
   }
 
-  // Calculate percentage change for KPIs
-  const profitChangePercent = profitData.length > 0 ? +2.15 : 0;
-  const avgOrderChangePercent = +4.12;
-  const totalOrdersChangePercent = -1.20;
-
   return (
     <div className="min-h-screen bg-gray-50 flex"> 
       <Sidebar username={username} onLogout={handleLogout} />
-      
+
       <main className="flex-1 md:ml-64 p-6">
         <div className="max-w-7xl mx-auto">
           {/* Welcome section */}
@@ -106,9 +100,6 @@ export default function Dashboard() {
                   <span className="text-2xl font-bold">${totalRevenue}</span>
                   <span className="text-sm ml-1">.25</span>
                 </div>
-                <div className={`text-xs mt-2 ${profitChangePercent >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                  {profitChangePercent >= 0 ? '+' : ''}{profitChangePercent}% From last month
-                </div>
               </div>
             </div>
 
@@ -119,20 +110,14 @@ export default function Dashboard() {
                   <span className="text-2xl font-bold">${averageProfit}</span>
                   <span className="text-sm ml-1">.15</span>
                 </div>
-                <div className={`text-xs mt-2 ${avgOrderChangePercent >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                  {avgOrderChangePercent >= 0 ? '+' : ''}{avgOrderChangePercent}% From last month
-                </div>
               </div>
             </div>
 
             <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
               <div className="mb-4">
-                <h3 className="text-gray-500 text-sm font-medium">Total Orders</h3>
+                <h3 className="text-gray-500 text-sm font-medium">Total Days</h3>
                 <div className="flex items-end">
-                  <span className="text-2xl font-bold">1,180</span>
-                </div>
-                <div className={`text-xs mt-2 ${totalOrdersChangePercent >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                  {totalOrdersChangePercent >= 0 ? '+' : ''}{totalOrdersChangePercent}% From last month
+                  <span className="text-2xl font-bold">{profitData.length}</span>
                 </div>
               </div>
             </div>
@@ -157,88 +142,50 @@ export default function Dashboard() {
           </div>
 
           {/* Revenue Chart */}
-          <div className="bg-white rounded-lg p-6 shadow-sm mb-8 border border-gray-100">
+          <div className="bg-white rounded-lg p-4 shadow-sm mb-8 border border-gray-100">
+            <h2 className="text-lg font-semibold mb-4">Revenue Overview</h2>
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart
                   data={revenueChartData}
                   margin={{
-                    top: 10,
+                    top: 5,
                     right: 30,
                     left: 0,
-                    bottom: 0,
+                    bottom: 5,
                   }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} />
-                  <YAxis axisLine={false} tickLine={false} />
-                  <Tooltip 
-                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
-                    formatter={(value) => [`$${value}`, 'Revenue']}
-                  />
-                  <Area 
-                    type="monotone" 
-                    dataKey="value" 
-                    stroke="#3b82f6" 
-                    fill="rgba(59, 130, 246, 0.1)" 
-                    activeDot={{ r: 8 }} 
-                    dot={{ r: 4, strokeWidth: 2, fill: '#fff', stroke: '#3b82f6' }} 
-                  />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f5" />
+                  <XAxis dataKey="name" stroke="#9CA3AF" fontSize={12} />
+                  <YAxis stroke="#9CA3AF" fontSize={12} />
+                  <Tooltip />
+                  <Area type="monotone" dataKey="value" stroke="#3B82F6" fill="#93C5FD" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
           </div>
 
-          {/* Top Products */}
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold mb-4">Top Products</h2>
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100">
+          {/* Top Dates Section */}
+          <div className="bg-white rounded-lg p-6 shadow-sm mb-8 border border-gray-100">
+            <h2 className="text-lg font-semibold mb-4">All Recorded Days</h2>
+            <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead>
                   <tr>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      <div className="flex items-center">
-                        <input type="checkbox" className="h-4 w-4 text-blue-600 border-gray-300 rounded" />
-                      </div>
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Product
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Revenue
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Sales
-                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Revenue</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {topDates.map((date, index) => (
-                    <tr key={index}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <input type="checkbox" className="h-4 w-4 text-blue-600 border-gray-300 rounded" />
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="h-10 w-10 bg-gray-200 rounded-md flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                            </svg>
-                          </div>
-                          <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">
-                              Product for {date.date}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        ${date.totalProfitUSD.toFixed(2)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500">
-                        {Math.floor(date.totalProfitUSD * 10)}
+                <tbody className="divide-y divide-gray-200">
+                  {profitData.map((item, index) => (
+                    <tr key={index} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.date}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.totalProfitUSD.toFixed(2)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
+                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                          Active
+                        </span>
                       </td>
                     </tr>
                   ))}
