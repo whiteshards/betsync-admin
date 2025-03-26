@@ -82,25 +82,25 @@ export default function Dashboard() {
 
           <div className="bg-white rounded-lg shadow-sm mb-8">
             <div className="p-6">
-              <div className="flex flex-wrap mb-6">
+              <div className="flex flex-wrap mb-8">
                 <div className="w-full md:w-1/3 mb-4 md:mb-0 pr-4">
                   <div className="h-full">
-                    <h3 className="text-sm font-light text-gray-500 mb-1">Gross Revenue</h3>
-                    <p className="text-2xl font-light">${formatCurrency(totalRevenue)}</p>
+                    <h3 className="text-sm font-medium text-gray-500 mb-1">Gross Revenue</h3>
+                    <p className="text-2xl font-semibold">${formatCurrency(totalRevenue)}</p>
                   </div>
                 </div>
 
                 <div className="w-full md:w-1/3 mb-4 md:mb-0 pr-4">
                   <div className="h-full">
                     <h3 className="text-sm font-medium text-gray-500 mb-1">Average Daily Income</h3>
-                    <p className="text-2xl font-medium">${formatCurrency(averageProfit)}</p>
+                    <p className="text-2xl font-semibold">${formatCurrency(averageProfit)}</p>
                   </div>
                 </div>
 
                 <div className="w-full md:w-1/3 mb-4 md:mb-0">
                   <div className="h-full">
                     <h3 className="text-sm font-medium text-gray-500 mb-1">Total Days Recorded</h3>
-                    <p className="text-2xl font-medium">{profitData.length}</p>
+                    <p className="text-2xl font-semibold">{profitData.length}</p>
                   </div>
                 </div>
               </div>
