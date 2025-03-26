@@ -33,8 +33,7 @@ export default function Sidebar({ username, onLogout }) {
           </svg>
           <span className="ml-3 text-sm font-medium">Servers</span>
         </Link>
-
-        
+      </div>
 
       {/* Logout at the bottom */}
       <div className="p-4 border-t border-gray-200 mt-auto">
