@@ -1,9 +1,10 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { ResponsiveContainer, AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
 import Sidebar from '@/components/sidebar';
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#0088FE'];
@@ -16,6 +17,7 @@ export default function Dashboard() {
   const [topDates, setTopDates] = useState([]);
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [averageProfit, setAverageProfit] = useState(0);
+  const [selectedView, setSelectedView] = useState('Daily');
 
   useEffect(() => {
     // Check if user is authenticated
@@ -49,7 +51,6 @@ export default function Dashboard() {
         setTotalRevenue(total.toFixed(2));
         setAverageProfit((total / data.length).toFixed(2));
       }
-
       setLoading(false);
     } catch (error) {
       console.error('Error fetching profit data:', error);
@@ -80,92 +81,121 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex" style={{ fontFamily: 'Open Sans' }}> 
+    <div className="min-h-screen bg-gray-50 flex" style={{ fontFamily: 'Inter, sans-serif' }}> 
       <Sidebar username={username} onLogout={handleLogout} />
 
       <main className="flex-1 md:ml-64 p-6">
         <div className="max-w-7xl mx-auto">
           {/* Welcome section */}
-          <div className="mb-8">
-            <h1 className="text-2xl font-bold mb-1">Welcome Back {username}</h1>
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold">Welcome Back {username}</h1>
           </div>
 
-          {/* KPI Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-white rounded-lg p-6 border border-gray-200">
-              <div className="mb-4">
+          {/* Combined Revenue Analytics Section */}
+          <div className="bg-white rounded-lg p-6 border border-gray-100 shadow-sm mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
+              <div>
                 <h3 className="text-gray-500 text-sm font-medium">Gross Revenue</h3>
-                <div className="flex items-end">
-                  <span className="text-2xl font-bold">${totalRevenue}</span>
-                  <span className="text-sm ml-1">.25</span>
+                <div className="flex items-baseline mt-2">
+                  <span className="text-3xl font-bold">${totalRevenue}</span>
+                  <span className="text-sm text-green-500 ml-2">+2.15% From last month</span>
                 </div>
               </div>
-            </div>
 
-            <div className="bg-white rounded-lg p-6 border border-gray-200">
-              <div className="mb-4">
+              <div>
                 <h3 className="text-gray-500 text-sm font-medium">Average Daily Income</h3>
-                <div className="flex items-end">
-                  <span className="text-2xl font-bold">${averageProfit}</span>
-                  <span className="text-sm ml-1">.15</span>
+                <div className="flex items-baseline mt-2">
+                  <span className="text-3xl font-bold">${averageProfit}</span>
+                  <span className="text-sm text-green-500 ml-2">+4.12% From last month</span>
                 </div>
               </div>
-            </div>
 
-            <div className="bg-white rounded-lg p-6 border border-gray-200">
-              <div className="mb-4">
+              <div>
                 <h3 className="text-gray-500 text-sm font-medium">Total Days</h3>
-                <div className="flex items-end">
-                  <span className="text-2xl font-bold">{profitData.length}</span>
+                <div className="flex items-baseline mt-2">
+                  <span className="text-3xl font-bold">{profitData.length}</span>
+                  <span className="text-sm text-red-500 ml-2">-1.20% From last month</span>
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Date Range & Filter */}
-          <div className="mb-6 flex justify-between items-center">
-            <div className="text-sm font-medium text-gray-500">Jan 22 - Jan 23</div>
-            <div className="relative">
-              <select className="block appearance-none bg-white border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded-md leading-tight focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm font-medium">
-                <option>Daily</option>
-                <option>Weekly</option>
-                <option>Monthly</option>
-                <option>Yearly</option>
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
-                </svg>
+            
+            {/* View selection and chart */}
+            <div className="flex justify-end mb-4">
+              <div className="relative inline-block">
+                <select 
+                  className="block appearance-none bg-white border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:border-blue-500"
+                  value={selectedView}
+                  onChange={(e) => setSelectedView(e.target.value)}
+                >
+                  <option>Daily</option>
+                  <option>Weekly</option>
+                  <option>Monthly</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                  </svg>
+                </div>
               </div>
             </div>
-          </div>
-
-          {/* Revenue Chart */}
-          <div className="bg-white rounded-lg p-4 border border-gray-200 mb-8">
-            <h2 className="text-lg font-semibold mb-4">Revenue Overview</h2>
+            
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart
                   data={revenueChartData}
                   margin={{
-                    top: 5,
+                    top: 10,
                     right: 30,
                     left: 0,
-                    bottom: 5,
+                    bottom: 20,
                   }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f5" />
-                  <XAxis dataKey="name" stroke="#9CA3AF" fontSize={12} />
-                  <YAxis stroke="#9CA3AF" fontSize={12} />
-                  <Tooltip />
-                  <Area type="monotone" dataKey="value" stroke="#3B82F6" fill="#93C5FD" />
+                  <defs>
+                    <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="#3B82F6" stopOpacity={0.1}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f5" vertical={false} />
+                  <XAxis 
+                    dataKey="name" 
+                    stroke="#9CA3AF" 
+                    fontSize={12} 
+                    axisLine={false}
+                    tickLine={false}
+                    padding={{ left: 10, right: 10 }}
+                  />
+                  <YAxis 
+                    stroke="#9CA3AF" 
+                    fontSize={12} 
+                    axisLine={false}
+                    tickLine={false}
+                    tickFormatter={(value) => `$${value}`}
+                  />
+                  <Tooltip 
+                    formatter={(value) => [`$${value.toFixed(2)}`, 'Revenue']}
+                    contentStyle={{ 
+                      backgroundColor: '#fff', 
+                      border: 'none',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                    }}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="value" 
+                    stroke="#3B82F6" 
+                    strokeWidth={2}
+                    fill="url(#colorValue)" 
+                    activeDot={{ r: 6, strokeWidth: 0 }} 
+                  />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
           </div>
 
           {/* Top Dates Section */}
-          <div className="bg-white rounded-lg p-6 border border-gray-200 mb-8">
+          <div className="bg-white rounded-lg p-6 border border-gray-100 shadow-sm mb-8">
             <h2 className="text-lg font-semibold mb-4">All Recorded Days</h2>
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
