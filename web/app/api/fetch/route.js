@@ -18,17 +18,24 @@ export async function GET(request) {
     const client = await clientPromise;
     const db = client.db("BetSync");
 
-    // Fetch data for the specific server - convert string to numeric ID if needed
-    let query = {};
+    // Try different approaches to find the server
+    let server = null;
     
-    // Check if the server_id is numeric
+    // First try numeric ID
     if (!isNaN(serverId)) {
-      query.server_id = Number(serverId);
-    } else {
-      query.server_id = serverId;
+      server = await db.collection("servers").findOne({ server_id: Number(serverId) });
     }
-
-    const server = await db.collection("servers").findOne(query);
+    
+    // If not found, try string ID
+    if (!server) {
+      server = await db.collection("servers").findOne({ server_id: serverId });
+    }
+    
+    // If still not found, try string comparison
+    if (!server) {
+      const allServers = await db.collection("servers").find({}).toArray();
+      server = allServers.find(s => String(s.server_id) === String(serverId));
+    }
 
     if (!server) {
       return NextResponse.json(
@@ -38,7 +45,7 @@ export async function GET(request) {
     }
 
     // Calculate server's cut (30% of total profit)
-    const totalProfit = typeof server.total_profit === 'number' ? server.total_profit : parseFloat(server.total_profit);
+    const totalProfit = typeof server.total_profit === 'number' ? server.total_profit : parseFloat(server.total_profit || 0);
     const serverCut = totalProfit * 0.3;
 
     // Process the server data

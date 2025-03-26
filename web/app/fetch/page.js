@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -25,10 +26,6 @@ export default function FetchPage() {
       if (!response.ok) {
         throw new Error(result.error || 'Failed to fetch server data');
       }
-
-      // Calculate server's cut (30% of total profit)
-      const serverCut = result.data.totalProfitUSD ? result.data.totalProfitUSD * 0.3 : 0;
-      result.data.serverCut = serverCut;
 
       setServerData(result.data);
     } catch (err) {
@@ -75,24 +72,6 @@ export default function FetchPage() {
         {serverData && (
           <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
             <h2 className="text-xl font-semibold mb-4">{serverData.serverName}</h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <div className="text-sm text-gray-500">Total Profit</div>
-                <div className="text-lg font-semibold text-blue-600">${serverData.totalProfitUSD ? serverData.totalProfitUSD.toFixed(2) : '0.00'}</div>
-              </div>
-              <div className="bg-purple-50 p-4 rounded-lg">
-                <div className="text-sm text-gray-500">Server's Cut (30%)</div>
-                <div className="text-lg font-semibold text-purple-600">${serverData.serverCut ? serverData.serverCut.toFixed(2) : '0.00'}</div>
-              </div>
-              <div className="bg-green-50 p-4 rounded-lg">
-                <div className="text-sm text-gray-500">Status</div>
-                <div className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                  {serverData.status}
-                </div>
-              </div>
-            </div>
-
             <div className="overflow-hidden">
               <table className="min-w-full divide-y divide-gray-200">
                 <tbody className="divide-y divide-gray-200">
@@ -103,6 +82,14 @@ export default function FetchPage() {
                   <tr>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/3">Server Name</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-2/3">{serverData.serverName}</td>
+                  </tr>
+                  <tr>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/3">Total Profit</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-2/3">${serverData.totalProfitUSD.toFixed(2)}</td>
+                  </tr>
+                  <tr>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/3">Server's Cut (30%)</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-2/3">${serverData.serverCut.toFixed(2)}</td>
                   </tr>
                   <tr>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/3">Region</td>
@@ -117,8 +104,15 @@ export default function FetchPage() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-2/3">
                       {serverData.whitelist && serverData.whitelist.length > 0 
                         ? serverData.whitelist.join(', ') 
-                        : 'None'
-                      }
+                        : 'None'}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/3">Status</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-2/3">
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                        {serverData.status}
+                      </span>
                     </td>
                   </tr>
                 </tbody>
