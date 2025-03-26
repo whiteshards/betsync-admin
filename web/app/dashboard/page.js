@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, Legend } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import Sidebar from '@/components/sidebar';
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#0088FE'];
@@ -80,7 +80,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex" style={{ fontFamily: 'Open Sans' }}> 
+    <div className="min-h-screen bg-gray-50 flex" style={{ fontFamily: 'Open Sans' }}> 
       <Sidebar username={username} onLogout={handleLogout} />
 
       <main className="flex-1 md:ml-64 p-6">
@@ -90,66 +90,108 @@ export default function Dashboard() {
             <h1 className="text-2xl font-bold mb-1">Welcome Back {username}</h1>
           </div>
 
-          {/* Merged Section */}
-          <div className="bg-white rounded-lg p-6 border border-gray-200 mb-8">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Revenue Overview</h2>
-              <select className="border border-gray-300 rounded-md text-sm p-1">
-                <option>Daily</option>
-                <option>Weekly</option>
-                <option>Monthly</option>
-              </select>
-            </div>
-
-            {/* KPI Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-6">
-              <div className="p-4">
+          {/* KPI Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="bg-white rounded-lg p-6 border border-gray-200">
+              <div className="mb-4">
                 <h3 className="text-gray-500 text-sm font-medium">Gross Revenue</h3>
                 <div className="flex items-end">
                   <span className="text-2xl font-bold">${totalRevenue}</span>
                   <span className="text-sm ml-1">.25</span>
                 </div>
               </div>
+            </div>
 
-              <div className="p-4 border-l border-r border-gray-200">
+            <div className="bg-white rounded-lg p-6 border border-gray-200">
+              <div className="mb-4">
                 <h3 className="text-gray-500 text-sm font-medium">Average Daily Income</h3>
                 <div className="flex items-end">
                   <span className="text-2xl font-bold">${averageProfit}</span>
                   <span className="text-sm ml-1">.15</span>
                 </div>
               </div>
+            </div>
 
-              <div className="p-4">
+            <div className="bg-white rounded-lg p-6 border border-gray-200">
+              <div className="mb-4">
                 <h3 className="text-gray-500 text-sm font-medium">Total Days</h3>
                 <div className="flex items-end">
                   <span className="text-2xl font-bold">{profitData.length}</span>
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Revenue Chart */}
+          {/* Date Range & Filter */}
+          <div className="mb-6 flex justify-between items-center">
+            <div className="text-sm font-medium text-gray-500">Jan 22 - Jan 23</div>
+            <div className="relative">
+              <select className="block appearance-none bg-white border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded-md leading-tight focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm font-medium">
+                <option>Daily</option>
+                <option>Weekly</option>
+                <option>Monthly</option>
+                <option>Yearly</option>
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* Revenue Chart */}
+          <div className="bg-white rounded-lg p-4 border border-gray-200 mb-8">
+            <h2 className="text-lg font-semibold mb-4">Revenue Overview</h2>
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart
-                  data={profitData}
+                  data={revenueChartData}
                   margin={{
-                    top: 10,
+                    top: 5,
                     right: 30,
                     left: 0,
-                    bottom: 0,
+                    bottom: 5,
                   }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f5" />
+                  <XAxis dataKey="name" stroke="#9CA3AF" fontSize={12} />
+                  <YAxis stroke="#9CA3AF" fontSize={12} />
                   <Tooltip />
-                  <Legend />
-                  <Area type="monotone" dataKey="totalProfitUSD" name="Total Profit (USD)" stroke="#8884d8" fill="#8884d8" fillOpacity={0.3} />
+                  <Area type="monotone" dataKey="value" stroke="#3B82F6" fill="#93C5FD" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
           </div>
-          {/* Top Dates Section - Removed as per request */}
+
+          {/* Top Dates Section */}
+          <div className="bg-white rounded-lg p-6 border border-gray-200 mb-8">
+            <h2 className="text-lg font-semibold mb-4">All Recorded Days</h2>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead>
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Revenue</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {profitData.map((item, index) => (
+                    <tr key={index} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.date}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.totalProfitUSD.toFixed(2)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
+                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                          Active
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </main>
     </div>
