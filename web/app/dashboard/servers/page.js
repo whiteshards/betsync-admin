@@ -1,10 +1,9 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
-import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import Sidebar from '@/components/sidebar';
 
 const COLORS = ['#5f6cff', '#82ca9d', '#ffc658', '#ff8042', '#0088FE'];
@@ -31,7 +30,7 @@ export default function ServersPage() {
 
   const fetchServerData = async () => {
     try {
-      const response = await fetch('/api/server-profit');
+      const response = await fetch('/api/servers'); // Changed API endpoint
       const { data } = await response.json();
 
       if (data) {
@@ -40,7 +39,7 @@ export default function ServersPage() {
 
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching server profit data:', error);
+      console.error('Error fetching server data:', error);
       setLoading(false);
     }
   };
@@ -65,6 +64,10 @@ export default function ServersPage() {
     value: server.totalProfitUSD
   }));
 
+  // No need for line chart data with the new structure
+  const selectedServerChartData = [];
+
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -76,7 +79,7 @@ export default function ServersPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex">
       <Sidebar username={username} onLogout={handleLogout} />
-      
+
       <main className="flex-1 md:ml-64 p-6">
         <div className="max-w-3xl mx-auto responsive-container text-center">
           {selectedServer ? (
@@ -91,14 +94,14 @@ export default function ServersPage() {
                 </svg>
                 Back to Servers
               </button>
-              
+
               <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 mb-6 w-full">
                 <h2 className="text-xl font-semibold mb-4 text-center">{selectedServer.serverName}</h2>
                 <div className="text-lg mb-6 text-center">
                   Total Profit: <span className="font-semibold text-blue-600">${selectedServer.totalProfitUSD.toFixed(2)}</span>
                 </div>
                       </div>
-              
+
               <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 w-full">
                 <h3 className="text-lg font-semibold mb-4 text-center">Server Details</h3>
                 <table className="min-w-full divide-y divide-gray-200">
@@ -112,12 +115,12 @@ export default function ServersPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/2 text-left">${selectedServer.totalProfitUSD.toFixed(2)}</td>
                     </tr>
                     <tr>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/2 text-right">Active Users</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/2 text-left">{Math.floor(selectedServer.totalProfitUSD * 3)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/2 text-right">Giveaway Channel</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/2 text-left">{selectedServer.giveawayChannel || 'None'}</td>
                     </tr>
                     <tr>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/2 text-right">Region</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/2 text-left">US-East</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/2 text-right">Whitelisted Channels</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/2 text-left">{selectedServer.whitelist && selectedServer.whitelist.length > 0 ? selectedServer.whitelist.join(', ') : 'None'}</td>
                     </tr>
                     <tr>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/2 text-right">Status</td>
@@ -135,7 +138,7 @@ export default function ServersPage() {
             // Servers overview
             <div>
               <h1 className="text-2xl font-bold mb-6">Server Management</h1>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 {serverData.slice(0, 4).map((server, index) => (
                   <div key={index} className="bg-white rounded-lg p-6 shadow-sm cursor-pointer hover:shadow-md transition-shadow border border-gray-100" onClick={() => handleServerClick(server)}>
@@ -153,7 +156,7 @@ export default function ServersPage() {
                   </div>
                 ))}
               </div>
-              
+
               <div className="grid grid-cols-1 gap-6 mb-8">
                 {/* Top 5 Profitable Servers */}
                 <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
@@ -230,7 +233,7 @@ export default function ServersPage() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-lg font-semibold">All Servers</h2>

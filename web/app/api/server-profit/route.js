@@ -1,61 +1,35 @@
-
-import clientPromise from '@/lib/mongodb';
 import { NextResponse } from 'next/server';
+import clientPromise from '../../../lib/mongodb';
 
 export async function GET() {
   try {
     const client = await clientPromise;
     const db = client.db("BetSync");
-    
-    // Fetch data from server_profit collection
-    const serverProfitData = await db.collection("server_profit")
+
+    // Fetch data from servers collection instead of server_profit
+    const serverData = await db.collection("servers")
       .find({})
       .toArray();
-    
-    // Group by server_id and calculate total profit
-    const serverMap = new Map();
-    
-    serverProfitData.forEach(item => {
-      const serverId = item.server_id.toString();
-      const profit = parseFloat(item.profit);
-      const serverName = item.server_name;
-      
-      if (serverMap.has(serverId)) {
-        const server = serverMap.get(serverId);
-        server.totalProfit += profit;
-        server.records.push({
-          date: item.date,
-          profit: profit
-        });
-      } else {
-        serverMap.set(serverId, {
-          serverId: serverId,
-          serverName: serverName,
-          totalProfit: profit,
-          records: [{
-            date: item.date,
-            profit: profit
-          }]
-        });
-      }
-    });
-    
-    // Convert to array and sort by total profit
-    const processedData = Array.from(serverMap.values()).sort((a, b) => b.totalProfit - a.totalProfit);
-    
-    // Keep raw profit values
-    processedData.forEach(server => {
-      server.totalProfitUSD = server.totalProfit;
-      server.records.forEach(record => {
-        record.profitUSD = record.profit;
-      });
-    });
-    
+
+    // Process the new server data structure
+    const processedData = serverData.map(server => ({
+      serverId: server.server_id.toString(),
+      serverName: server.server_name,
+      totalProfit: server.total_profit,
+      totalProfitUSD: server.total_profit,
+      // No longer need to include records array since we don't have date-specific data
+      giveawayChannel: server.giveaway_channel,
+      whitelist: server.whitelisted_channels || []
+    }));
+
+    // Sort by total profit
+    processedData.sort((a, b) => b.totalProfit - a.totalProfit);
+
     return NextResponse.json({ data: processedData });
   } catch (error) {
     console.error('MongoDB error:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch server profit data' },
+      { error: 'Failed to fetch server data' },
       { status: 500 }
     );
   }
