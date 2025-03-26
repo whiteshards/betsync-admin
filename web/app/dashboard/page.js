@@ -80,7 +80,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex"> 
+    <div className="min-h-screen bg-gray-50 flex" style={{ fontFamily: 'Open Sans' }}> 
       <Sidebar username={username} onLogout={handleLogout} />
 
       <main className="flex-1 md:ml-64 p-6">
@@ -88,12 +88,11 @@ export default function Dashboard() {
           {/* Welcome section */}
           <div className="mb-8">
             <h1 className="text-2xl font-bold mb-1">Welcome Back {username}</h1>
-            <p className="text-gray-600">You have <span className="text-blue-500">2 unread</span> notifications</p>
           </div>
 
           {/* KPI Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+            <div className="bg-white rounded-lg p-6 border border-gray-200">
               <div className="mb-4">
                 <h3 className="text-gray-500 text-sm font-medium">Gross Revenue</h3>
                 <div className="flex items-end">
@@ -103,9 +102,9 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+            <div className="bg-white rounded-lg p-6 border border-gray-200">
               <div className="mb-4">
-                <h3 className="text-gray-500 text-sm font-medium">Avg. Order Value</h3>
+                <h3 className="text-gray-500 text-sm font-medium">Average Daily Income</h3>
                 <div className="flex items-end">
                   <span className="text-2xl font-bold">${averageProfit}</span>
                   <span className="text-sm ml-1">.15</span>
@@ -113,7 +112,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+            <div className="bg-white rounded-lg p-6 border border-gray-200">
               <div className="mb-4">
                 <h3 className="text-gray-500 text-sm font-medium">Total Days</h3>
                 <div className="flex items-end">
@@ -142,7 +141,7 @@ export default function Dashboard() {
           </div>
 
           {/* Revenue Chart */}
-          <div className="bg-white rounded-lg p-4 shadow-sm mb-8 border border-gray-100">
+          <div className="bg-white rounded-lg p-4 border border-gray-200 mb-8">
             <h2 className="text-lg font-semibold mb-4">Revenue Overview</h2>
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
@@ -166,7 +165,7 @@ export default function Dashboard() {
           </div>
 
           {/* Top Dates Section */}
-          <div className="bg-white rounded-lg p-6 shadow-sm mb-8 border border-gray-100">
+          <div className="bg-white rounded-lg p-6 border border-gray-200 mb-8">
             <h2 className="text-lg font-semibold mb-4">All Recorded Days</h2>
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
