@@ -3,8 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
-import Sidebar from '@/components/sidebar';
+import Sidebar from '../../../components/Sidebar';
 
 const COLORS = ['#5f6cff', '#82ca9d', '#ffc658', '#ff8042', '#0088FE'];
 
@@ -30,7 +29,7 @@ export default function ServersPage() {
 
   const fetchServerData = async () => {
     try {
-      const response = await fetch('/api/servers'); // Changed API endpoint
+      const response = await fetch('/api/servers');
       const { data } = await response.json();
 
       if (data) {
@@ -58,16 +57,6 @@ export default function ServersPage() {
     setSelectedServer(null);
   };
 
-  // Data formatting for the pie chart
-  const serverPieData = serverData.slice(0, 5).map(server => ({
-    name: server.serverName,
-    value: server.totalProfitUSD
-  }));
-
-  // No need for line chart data with the new structure
-  const selectedServerChartData = [];
-
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -80,11 +69,11 @@ export default function ServersPage() {
     <div className="min-h-screen bg-gray-50 flex">
       <Sidebar username={username} onLogout={handleLogout} />
 
-      <main className="flex-1 md:ml-64 p-6 flex flex-col items-center"> {/* Added flex-col and items-center */}
-        <div className="max-w-3xl mx-auto"> {/* Removed responsive-container */}
+      <main className="flex-1 md:ml-64 p-6 flex justify-center">
+        <div className="max-w-2xl w-full">
           {selectedServer ? (
             // Server detail view
-            <div className="w-full"> {/* Added w-full for better centering */}
+            <div className="w-full">
               <button 
                 onClick={handleBackClick}
                 className="mb-6 flex items-center text-blue-600 hover:text-blue-700"
@@ -100,183 +89,68 @@ export default function ServersPage() {
                 <div className="text-lg mb-6 text-center">
                   Total Profit: <span className="font-semibold text-blue-600">${selectedServer.totalProfitUSD.toFixed(2)}</span>
                 </div>
-                      </div>
 
-              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 w-full">
-                <h3 className="text-lg font-semibold mb-4 text-center">Server Details</h3>
-                <table className="min-w-full divide-y divide-gray-200">
-                  <tbody className="divide-y divide-gray-200">
-                    <tr>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/2 text-right">Server Name</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/2 text-left">{selectedServer.serverName}</td>
-                    </tr>
-                    <tr>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/2 text-right">Total Profit</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/2 text-left">${selectedServer.totalProfitUSD.toFixed(2)}</td>
-                    </tr>
-                    <tr>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/2 text-right">Giveaway Channel</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/2 text-left">{selectedServer.giveawayChannel || 'None'}</td>
-                    </tr>
-                    <tr>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/2 text-right">Whitelisted Channels</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/2 text-left">{selectedServer.whitelist && selectedServer.whitelist.length > 0 ? selectedServer.whitelist.join(', ') : 'None'}</td>
-                    </tr>
-                    <tr>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/2 text-right">Status</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-left w-1/2">
-                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                          Active
-                        </span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                  <h3 className="text-md font-medium mb-3">Server Details</h3>
+                  <table className="min-w-full">
+                    <tbody>
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/2 text-right">Server ID</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/2 text-left">{selectedServer.serverId || 'N/A'}</td>
+                      </tr>
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/2 text-right">IP Address</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/2 text-left">{selectedServer.ipAddress || 'N/A'}</td>
+                      </tr>
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/2 text-right">Location</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/2 text-left">{selectedServer.location || 'N/A'}</td>
+                      </tr>
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/2 text-right">Created At</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/2 text-left">{selectedServer.createdAt || 'N/A'}</td>
+                      </tr>
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/2 text-right">Whitelist</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/2 text-left">{selectedServer.whitelist && selectedServer.whitelist.length > 0 ? selectedServer.whitelist.join(', ') : 'None'}</td>
+                      </tr>
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/2 text-right">Status</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-left w-1/2">
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            Active
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           ) : (
-            // Servers overview
-            <div className="w-full"> {/* Added w-full for better centering */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                {serverData.slice(0, 4).map((server, index) => (
+            // Servers overview - SIMPLIFIED, showing only server cards
+            <div className="w-full">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                {serverData.map((server, index) => (
                   <div key={index} className="bg-white rounded-lg p-6 shadow-sm cursor-pointer hover:shadow-md transition-shadow border border-gray-100" onClick={() => handleServerClick(server)}>
                     <div className="flex items-center">
                       <div className="h-10 w-10 rounded-full flex items-center justify-center" style={{ backgroundColor: COLORS[index % COLORS.length] + '20' }}>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" style={{ color: COLORS[index % COLORS.length] }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" style={{ color: COLORS[index % COLORS.length] }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2" />
                         </svg>
                       </div>
                       <div className="ml-4">
-                        <h2 className="text-lg font-semibold text-gray-900">{server.serverName}</h2>
-                        <p className="text-sm text-gray-500">${server.totalProfitUSD.toFixed(2)}</p>
+                        <div className="text-sm font-medium text-gray-900">{server.serverName}</div>
+                        <div className="text-sm text-gray-500">{server.ipAddress}</div>
                       </div>
+                    </div>
+                    <div className="mt-4 text-right">
+                      <span className={`font-semibold text-md ${server.totalProfitUSD > 0 ? 'text-green-600' : 'text-red-500'}`}>
+                        ${server.totalProfitUSD.toFixed(2)}
+                      </span>
                     </div>
                   </div>
                 ))}
-              </div>
-
-              <div className="grid grid-cols-1 gap-6 mb-8">
-                {/* Top 5 Profitable Servers */}
-                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-                  <h2 className="text-lg font-semibold mb-4">Top 5 Profitable Servers</h2>
-                  <div className="overflow-hidden">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead>
-                        <tr>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Server</th>
-                          <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Profit</th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
-                        {serverData
-                          .filter(server => server.totalProfitUSD > 0)
-                          .sort((a, b) => b.totalProfitUSD - a.totalProfitUSD)
-                          .slice(0, 5)
-                          .map((server, index) => (
-                            <tr key={index} className="hover:bg-gray-50 cursor-pointer" onClick={() => handleServerClick(server)}>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="flex items-center">
-                                  <div className="h-8 w-8 rounded-full flex items-center justify-center" style={{ backgroundColor: COLORS[index % COLORS.length] + '20' }}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" style={{ color: COLORS[index % COLORS.length] }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2" />
-                                    </svg>
-                                  </div>
-                                  <div className="ml-4">
-                                    <div className="text-sm font-medium text-gray-900">{server.serverName}</div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">${server.totalProfitUSD.toFixed(2)}</td>
-                            </tr>
-                          ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                {/* Unprofitable Servers */}
-                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-                  <h2 className="text-lg font-semibold mb-4">Unprofitable Servers</h2>
-                  <div className="overflow-hidden">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead>
-                        <tr>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Server</th>
-                          <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Profit</th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
-                        {serverData
-                          .filter(server => server.totalProfitUSD <= 0)
-                          .sort((a, b) => a.totalProfitUSD - b.totalProfitUSD)
-                          .map((server, index) => (
-                            <tr key={index} className="hover:bg-gray-50 cursor-pointer" onClick={() => handleServerClick(server)}>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="flex items-center">
-                                  <div className="h-8 w-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#ff404020' }}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" style={{ color: '#ff4040' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2" />
-                                    </svg>
-                                  </div>
-                                  <div className="ml-4">
-                                    <div className="text-sm font-medium text-gray-900">{server.serverName}</div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-red-500">${server.totalProfitUSD.toFixed(2)}</td>
-                            </tr>
-                          ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg font-semibold">All Servers</h2>
-                  <button className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    Add Server
-                  </button>
-                </div>
-                <div className="servers-table-container overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Server</th>
-                        <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Profit</th>
-                        <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Users</th>
-                        <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {serverData.map((server, index) => (
-                        <tr key={index} className="hover:bg-gray-50 cursor-pointer" onClick={() => handleServerClick(server)}>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <div className="h-10 w-10 rounded-full flex items-center justify-center" style={{ backgroundColor: COLORS[index % COLORS.length] + '20' }}>
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" style={{ color: COLORS[index % COLORS.length] }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2" />
-                                </svg>
-                              </div>
-                              <div className="ml-4">
-                                <div className="text-sm font-medium text-gray-900">{server.serverName}</div>
-                                <div className="text-sm text-gray-500">Region: US-East</div>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">${server.totalProfitUSD.toFixed(2)}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500">{Math.floor(server.totalProfitUSD * 3)}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                              Active
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
               </div>
             </div>
           )}
