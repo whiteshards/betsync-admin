@@ -2,6 +2,31 @@
 import { NextResponse } from 'next/server';
 import clientPromise from '../../../lib/mongodb';
 
+async function fetchCryptoPrices() {
+  try {
+    // Using CoinGecko API to fetch cryptocurrency prices
+    const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,dogecoin&vs_currencies=usd');
+    const data = await response.json();
+    return {
+      btc: data.bitcoin?.usd || 0,
+      eth: data.ethereum?.usd || 0,
+      sol: data.solana?.usd || 0,
+      doge: data.dogecoin?.usd || 0,
+      usdt: 1 // USDT is pegged to USD
+    };
+  } catch (error) {
+    console.error('Error fetching crypto prices:', error);
+    // Fallback prices if API fails
+    return {
+      btc: 65000,
+      eth: 3500,
+      sol: 150,
+      doge: 0.15,
+      usdt: 1
+    };
+  }
+}
+
 export async function GET(request) {
   try {
     // Get the server ID from the URL parameters
@@ -17,6 +42,9 @@ export async function GET(request) {
 
     const client = await clientPromise;
     const db = client.db("BetSync");
+
+    // Fetch crypto prices
+    const cryptoPrices = await fetchCryptoPrices();
 
     // Try different approaches to find the server
     let server = null;
@@ -44,24 +72,48 @@ export async function GET(request) {
       );
     }
 
+    // Calculate total USD value and crypto values
+    let totalProfitUSD = 0;
+    const cryptoValues = {};
+    
+    // Process wallet if it exists
+    if (server.wallet) {
+      Object.entries(server.wallet).forEach(([crypto, amount]) => {
+        const price = cryptoPrices[crypto.toLowerCase()] || 0;
+        const valueUSD = amount * price;
+        cryptoValues[crypto] = {
+          amount,
+          priceUSD: price,
+          valueUSD
+        };
+        totalProfitUSD += valueUSD;
+      });
+    } else if (typeof server.total_profit === 'number' || typeof server.total_profit === 'string') {
+      // Fallback to total_profit if wallet doesn't exist
+      totalProfitUSD = typeof server.total_profit === 'number' ? server.total_profit : parseFloat(server.total_profit || 0);
+    }
+
     // Calculate server's cut (30% of total profit)
-    const totalProfit = typeof server.total_profit === 'number' ? server.total_profit : parseFloat(server.total_profit || 0);
-    const serverCut = totalProfit * 0.3;
+    const serverCut = totalProfitUSD * 0.3;
 
     // Process the server data
     const processedData = {
       serverId: server.server_id.toString(),
       serverName: server.server_name,
-      totalProfit: totalProfit,
-      totalProfitUSD: totalProfit,
-      serverCut: serverCut,
+      wallet: server.wallet || {},
+      cryptoValues,
+      totalProfitUSD,
+      serverCut,
       giveawayChannel: server.giveaway_channel,
       whitelist: server.whitelisted_channels || [],
       region: "US-East", // Adding this for consistency with the UI
       status: "Active"    // Adding this for consistency with the UI
     };
 
-    return NextResponse.json({ data: processedData });
+    return NextResponse.json({ 
+      data: processedData,
+      cryptoPrices
+    });
   } catch (error) {
     console.error('MongoDB error:', error);
     return NextResponse.json(

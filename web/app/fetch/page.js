@@ -4,9 +4,20 @@
 import { useState } from 'react';
 import Link from 'next/link';
 
+// Define crypto colors
+const CRYPTO_COLORS = {
+  BTC: '#F7931A',
+  ETH: '#627EEA',
+  SOL: '#00FFA3',
+  USDT: '#26A17B',
+  LTC: '#BFBBBB',
+  DOGE: '#C2A633'
+};
+
 export default function FetchPage() {
   const [serverId, setServerId] = useState('');
   const [serverData, setServerData] = useState(null);
+  const [cryptoPrices, setCryptoPrices] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -28,12 +39,22 @@ export default function FetchPage() {
       }
 
       setServerData(result.data);
+      setCryptoPrices(result.cryptoPrices);
     } catch (err) {
       setError(err.message);
       setServerData(null);
     } finally {
       setLoading(false);
     }
+  };
+
+  // Format currency with commas
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', { 
+      style: 'decimal',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(amount);
   };
 
   return (
@@ -72,6 +93,10 @@ export default function FetchPage() {
         {serverData && (
           <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
             <h2 className="text-xl font-semibold mb-4">{serverData.serverName}</h2>
+            <div className="text-lg mb-6 text-center">
+              Total Profit: <span className="font-semibold text-blue-600">${formatCurrency(serverData.totalProfitUSD)}</span>
+            </div>
+            
             <div className="overflow-hidden">
               <table className="min-w-full divide-y divide-gray-200">
                 <tbody className="divide-y divide-gray-200">
@@ -85,11 +110,11 @@ export default function FetchPage() {
                   </tr>
                   <tr>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/3">Total Profit</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-2/3">${serverData.totalProfitUSD.toFixed(2)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-2/3">${formatCurrency(serverData.totalProfitUSD)}</td>
                   </tr>
                   <tr>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/3">Server's Cut (30%)</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-2/3">${serverData.serverCut.toFixed(2)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-2/3">${formatCurrency(serverData.serverCut)}</td>
                   </tr>
                   <tr>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/3">Region</td>
@@ -118,6 +143,48 @@ export default function FetchPage() {
                 </tbody>
               </table>
             </div>
+
+            {/* Crypto Wallet Details */}
+            {Object.keys(serverData.cryptoValues || {}).length > 0 && (
+              <div className="mt-8">
+                <h3 className="text-lg font-semibold mb-4 text-center">Wallet Details</h3>
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead>
+                    <tr>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cryptocurrency</th>
+                      <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                      <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Price (USD)</th>
+                      <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Value (USD)</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {Object.entries(serverData.cryptoValues || {}).map(([crypto, data], index) => (
+                      <tr key={index}>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="h-8 w-8 rounded-full flex items-center justify-center mr-3" style={{ backgroundColor: (CRYPTO_COLORS[crypto] || '#8884d8') + '20' }}>
+                              <span className="text-sm font-bold" style={{ color: CRYPTO_COLORS[crypto] || '#8884d8' }}>{crypto}</span>
+                            </div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {crypto === 'BTC' && 'Bitcoin'}
+                              {crypto === 'ETH' && 'Ethereum'}
+                              {crypto === 'SOL' && 'Solana'}
+                              {crypto === 'USDT' && 'Tether'}
+                              {crypto === 'LTC' && 'Litecoin'}
+                              {crypto === 'DOGE' && 'Dogecoin'}
+                              {!['BTC', 'ETH', 'SOL', 'USDT', 'LTC', 'DOGE'].includes(crypto) && crypto}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500">{data.amount}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500">${formatCurrency(data.priceUSD)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500">${formatCurrency(data.valueUSD)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         )}
       </div>
