@@ -1,18 +1,27 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import Sidebar from '@/components/sidebar';
 
 const COLORS = ['#5f6cff', '#82ca9d', '#ffc658', '#ff8042', '#0088FE'];
+const CRYPTO_COLORS = {
+  BTC: '#f7931a',
+  ETH: '#627eea',
+  SOL: '#14f195',
+  DOGE: '#ba9f33',
+  USDT: '#26a17b'
+};
 
 export default function ServersPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState('');
   const [serverData, setServerData] = useState([]);
+  const [cryptoPrices, setCryptoPrices] = useState({});
   const [selectedServer, setSelectedServer] = useState(null);
 
   useEffect(() => {
@@ -30,11 +39,15 @@ export default function ServersPage() {
 
   const fetchServerData = async () => {
     try {
-      const response = await fetch('/api/servers'); // Changed API endpoint
-      const { data } = await response.json();
+      const response = await fetch('/api/servers');
+      const { data, cryptoPrices } = await response.json();
 
       if (data) {
         setServerData(data);
+      }
+      
+      if (cryptoPrices) {
+        setCryptoPrices(cryptoPrices);
       }
 
       setLoading(false);
@@ -58,15 +71,30 @@ export default function ServersPage() {
     setSelectedServer(null);
   };
 
-  // Data formatting for the pie chart
+  // Format currency with commas
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', { 
+      style: 'decimal',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(amount);
+  };
+
+  // Data formatting for the pie chart (crypto distribution)
+  const getWalletPieData = (server) => {
+    if (!server || !server.cryptoValues) return [];
+    
+    return Object.entries(server.cryptoValues).map(([crypto, data]) => ({
+      name: crypto,
+      value: data.valueUSD
+    }));
+  };
+
+  // Server pie data by profit
   const serverPieData = serverData.slice(0, 5).map(server => ({
     name: server.serverName,
     value: server.totalProfitUSD
   }));
-
-  // No need for line chart data with the new structure
-  const selectedServerChartData = [];
-
 
   if (loading) {
     return (
@@ -98,10 +126,79 @@ export default function ServersPage() {
               <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 mb-6 w-full">
                 <h2 className="text-xl font-semibold mb-4 text-center">{selectedServer.serverName}</h2>
                 <div className="text-lg mb-6 text-center">
-                  Total Profit: <span className="font-semibold text-blue-600">${selectedServer.totalProfitUSD.toFixed(2)}</span>
+                  Total Profit: <span className="font-semibold text-blue-600">${formatCurrency(selectedServer.totalProfitUSD)}</span>
                 </div>
-                      </div>
+                
+                {/* Crypto Wallet Distribution */}
+                {Object.keys(selectedServer.cryptoValues || {}).length > 0 && (
+                  <div className="mt-6">
+                    <h3 className="text-md font-semibold mb-4 text-center">Wallet Distribution</h3>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={getWalletPieData(selectedServer)}
+                            cx="50%"
+                            cy="50%"
+                            labelLine={false}
+                            outerRadius={80}
+                            fill="#8884d8"
+                            dataKey="value"
+                            nameKey="name"
+                            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                          >
+                            {getWalletPieData(selectedServer).map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={CRYPTO_COLORS[entry.name] || COLORS[index % COLORS.length]} />
+                            ))}
+                          </Pie>
+                          <Tooltip formatter={(value) => `$${formatCurrency(value)}`} />
+                          <Legend />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                )}
+              </div>
 
+              {/* Crypto Wallet Details */}
+              {Object.keys(selectedServer.cryptoValues || {}).length > 0 && (
+                <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 mb-6 w-full">
+                  <h3 className="text-lg font-semibold mb-4 text-center">Wallet Details</h3>
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead>
+                      <tr>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cryptocurrency</th>
+                        <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                        <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Price (USD)</th>
+                        <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Value (USD)</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {Object.entries(selectedServer.cryptoValues || {}).map(([crypto, data], index) => (
+                        <tr key={index}>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <div className="h-8 w-8 rounded-full flex items-center justify-center" style={{ backgroundColor: (CRYPTO_COLORS[crypto] || COLORS[index % COLORS.length]) + '20' }}>
+                                <span className="font-bold text-xs" style={{ color: CRYPTO_COLORS[crypto] || COLORS[index % COLORS.length] }}>{crypto}</span>
+                              </div>
+                              <div className="ml-4 font-medium">{crypto}</div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">{data.amount.toFixed(6)}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">${formatCurrency(data.priceUSD)}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">${formatCurrency(data.valueUSD)}</td>
+                        </tr>
+                      ))}
+                      <tr className="bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap font-bold" colSpan="3">Total Value (USD)</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-bold">${formatCurrency(selectedServer.totalProfitUSD)}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {/* Server Details */}
               <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 w-full">
                 <h3 className="text-lg font-semibold mb-4 text-center">Server Details</h3>
                 <table className="min-w-full divide-y divide-gray-200">
@@ -111,8 +208,8 @@ export default function ServersPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/2 text-left">{selectedServer.serverName}</td>
                     </tr>
                     <tr>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/2 text-right">Total Profit</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/2 text-left">${selectedServer.totalProfitUSD.toFixed(2)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/2 text-right">Total Value (USD)</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/2 text-left">${formatCurrency(selectedServer.totalProfitUSD)}</td>
                     </tr>
                     <tr>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/2 text-right">Giveaway Channel</td>
@@ -137,6 +234,18 @@ export default function ServersPage() {
           ) : (
             // Servers overview
             <div className="w-full flex flex-col items-center">
+              {/* Current Crypto Prices Card */}
+              <div className="w-full bg-white rounded-lg p-6 shadow-sm mb-8 border border-gray-100">
+                <h2 className="text-lg font-semibold mb-4">Current Cryptocurrency Prices</h2>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                  {Object.entries(cryptoPrices).map(([crypto, price], index) => (
+                    <div key={index} className="p-3 rounded-lg flex flex-col items-center justify-center" style={{ backgroundColor: (CRYPTO_COLORS[crypto.toUpperCase()] || COLORS[index % COLORS.length]) + '10' }}>
+                      <div className="text-xs uppercase font-semibold" style={{ color: CRYPTO_COLORS[crypto.toUpperCase()] || COLORS[index % COLORS.length] }}>{crypto.toUpperCase()}</div>
+                      <div className="text-lg font-bold">${formatCurrency(price)}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 {serverData.slice(0, 4).map((server, index) => (
@@ -149,7 +258,7 @@ export default function ServersPage() {
                       </div>
                       <div className="ml-4">
                         <h2 className="text-lg font-semibold text-gray-900">{server.serverName}</h2>
-                        <p className="text-sm text-gray-500">${server.totalProfitUSD.toFixed(2)}</p>
+                        <p className="text-sm text-gray-500">${formatCurrency(server.totalProfitUSD)}</p>
                       </div>
                     </div>
                   </div>
@@ -165,7 +274,8 @@ export default function ServersPage() {
                       <thead>
                         <tr>
                           <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Server</th>
-                          <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Profit</th>
+                          <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Value (USD)</th>
+                          <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Cryptocurrencies</th>
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
@@ -187,7 +297,16 @@ export default function ServersPage() {
                                   </div>
                                 </div>
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">${server.totalProfitUSD.toFixed(2)}</td>
+                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">${formatCurrency(server.totalProfitUSD)}</td>
+                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500">
+                                <div className="flex justify-end space-x-1">
+                                  {Object.keys(server.cryptoValues || {}).map((crypto, i) => (
+                                    <div key={i} className="h-6 w-6 rounded-full flex items-center justify-center" style={{ backgroundColor: (CRYPTO_COLORS[crypto] || COLORS[i % COLORS.length]) + '20' }}>
+                                      <span className="text-xs font-bold" style={{ color: CRYPTO_COLORS[crypto] || COLORS[i % COLORS.length] }}>{crypto.charAt(0)}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </td>
                             </tr>
                           ))}
                       </tbody>
@@ -203,7 +322,8 @@ export default function ServersPage() {
                       <thead>
                         <tr>
                           <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Server</th>
-                          <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Profit</th>
+                          <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Value (USD)</th>
+                          <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Cryptocurrencies</th>
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
@@ -224,7 +344,16 @@ export default function ServersPage() {
                                   </div>
                                 </div>
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-red-500">${server.totalProfitUSD.toFixed(2)}</td>
+                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-red-500">${formatCurrency(server.totalProfitUSD)}</td>
+                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500">
+                                <div className="flex justify-end space-x-1">
+                                  {Object.keys(server.cryptoValues || {}).map((crypto, i) => (
+                                    <div key={i} className="h-6 w-6 rounded-full flex items-center justify-center" style={{ backgroundColor: (CRYPTO_COLORS[crypto] || COLORS[i % COLORS.length]) + '20' }}>
+                                      <span className="text-xs font-bold" style={{ color: CRYPTO_COLORS[crypto] || COLORS[i % COLORS.length] }}>{crypto.charAt(0)}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </td>
                             </tr>
                           ))}
                       </tbody>
@@ -245,7 +374,8 @@ export default function ServersPage() {
                     <thead className="bg-gray-50">
                       <tr>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Server</th>
-                        <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Profit</th>
+                        <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Value (USD)</th>
+                        <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Cryptocurrencies</th>
                         <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Users</th>
                         <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                       </tr>
@@ -266,7 +396,18 @@ export default function ServersPage() {
                               </div>
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">${server.totalProfitUSD.toFixed(2)}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            ${formatCurrency(server.totalProfitUSD)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500">
+                            <div className="flex justify-end space-x-1">
+                              {Object.keys(server.cryptoValues || {}).map((crypto, i) => (
+                                <div key={i} className="h-6 w-6 rounded-full flex items-center justify-center" style={{ backgroundColor: (CRYPTO_COLORS[crypto] || COLORS[i % COLORS.length]) + '20' }}>
+                                  <span className="text-xs font-bold" style={{ color: CRYPTO_COLORS[crypto] || COLORS[i % COLORS.length] }}>{crypto.charAt(0)}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </td>
                           <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500">{Math.floor(server.totalProfitUSD * 3)}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
                             <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
