@@ -104,7 +104,7 @@ export default function FetchPage() {
                   <h3 className="text-lg font-medium mb-2">Server Information</h3>
                   <p className="text-gray-300">ID: {serverData.serverId}</p>
                   <p className="text-gray-300">Members: {serverData.memberCount}</p>
-                  <p className="text-gray-300">Transactions: {serverData.transactions.length}</p>
+                  <p className="text-gray-300">Transactions: {serverData.transactions?.length || 0}</p>
                   <p className="text-gray-300">Total Volume: ${formatCurrency(serverData.totalVolumeUSD)}</p>
                   <p className="text-gray-300">Profit: ${formatCurrency(serverData.totalProfitUSD)}</p>
                 </div>

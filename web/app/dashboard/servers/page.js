@@ -130,7 +130,7 @@ export default function ServersPage() {
                       <h3 className="text-lg font-medium mb-2">Server Information</h3>
                       <p className="text-gray-300">ID: {selectedServer.serverId}</p>
                       <p className="text-gray-300">Members: {selectedServer.memberCount}</p>
-                      <p className="text-gray-300">Transactions: {selectedServer.transactions.length}</p>
+                      <p className="text-gray-300">Transactions: {selectedServer.transactions?.length}</p>
                       <p className="text-gray-300">Total Volume: ${formatCurrency(selectedServer.totalVolumeUSD)}</p>
                       <p className="text-gray-300">Profit: ${formatCurrency(selectedServer.totalProfitUSD)}</p>
                     </div>
