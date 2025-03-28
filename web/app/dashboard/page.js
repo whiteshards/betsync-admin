@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -31,8 +30,8 @@ export default function Dashboard() {
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [averageProfit, setAverageProfit] = useState(0);
   const [selectedView, setSelectedView] = useState('Daily');
-  
-  // Format currency with commas
+
+  // Format currency with commas - defined once and used throughout the component
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', { 
       style: 'decimal',
@@ -71,11 +70,11 @@ export default function Dashboard() {
             if (b.totalProfitUSD !== a.totalProfitUSD) {
               return b.totalProfitUSD - a.totalProfitUSD;
             }
-            
+
             // Then by date (most recent first) if profits are equal
             const [aMonth, aDay, aYear] = a.date.split('/').map(Number);
             const [bMonth, bDay, bYear] = b.date.split('/').map(Number);
-            
+
             if (aYear !== bYear) return bYear - aYear;
             if (aMonth !== bMonth) return bMonth - aMonth;
             return bDay - aDay;
@@ -101,14 +100,6 @@ export default function Dashboard() {
     setSelectedView(e.target.value);
   };
 
-  // Format currency with commas
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', { 
-      style: 'decimal',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }).format(amount);
-  };
 
   return (
     <div className="flex h-screen bg-white">
@@ -155,7 +146,7 @@ export default function Dashboard() {
                 </select>
                 <span className="text-xs text-gray-500">Showing data in chronological order</span>
               </div>
-              
+
               {/* All Days Data Section */}
               <div className="mt-8 mb-6">
                 <h3 className="text-lg font-medium mb-4">All Days Data</h3>
@@ -171,7 +162,7 @@ export default function Dashboard() {
                           <div className="text-sm font-medium">{formatDate(item.date)}</div>
                           <div className="text-lg font-semibold">${formatCurrency(item.totalProfitUSD)}</div>
                         </div>
-                        
+
                         {showDetails && (
                           <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" onClick={() => setShowDetails(false)}>
                             <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
@@ -186,12 +177,12 @@ export default function Dashboard() {
                                   </svg>
                                 </button>
                               </div>
-                              
+
                               <div className="mb-4">
                                 <div className="text-sm text-gray-500 mb-1">Total Value</div>
                                 <div className="text-xl font-bold">${formatCurrency(item.totalProfitUSD)}</div>
                               </div>
-                              
+
                               {item.cryptoValues && Object.keys(item.cryptoValues).length > 0 ? (
                                 <div>
                                   <h4 className="font-medium mb-2">Wallet Details</h4>
