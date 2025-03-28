@@ -112,7 +112,7 @@ export default function Dashboard() {
       
       <main className="pt-20 px-6 pb-10 max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-1">Welcome back, {username}</h1>
+          <h1 className="text-4xl font-bold mb-1 bg-gradient-to-r from-purple-300 to-purple-500 bg-clip-text text-transparent">Welcome back, {username}</h1>
           <p className="text-gray-400">Here's your financial overview</p>
         </div>
 
@@ -121,7 +121,6 @@ export default function Dashboard() {
           <div className="bg-[#111111] rounded-xl p-6 border border-[#222222]">
             <p className="text-gray-400 text-sm mb-1">Total Revenue</p>
             <h2 className="text-3xl font-bold">${formatCurrency(totalRevenue)}</h2>
-            <span className="text-green-400 text-sm mt-2 inline-block">+12.67%</span>
           </div>
 
           <div className="bg-[#111111] rounded-xl p-6 border border-[#222222]">
@@ -136,13 +135,13 @@ export default function Dashboard() {
         </div>
 
         {/* Chart */}
-        <div className="bg-[#111111] rounded-xl p-6 border border-[#222222] mb-8">
+        <div className="bg-[#111111] rounded-xl p-6 border border-[#222222] mb-8 shadow-lg">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold">Revenue Trend</h2>
+            <h2 className="text-xl font-semibold text-purple-300">Revenue Trend</h2>
             <select 
               value={selectedView} 
               onChange={handleViewChange}
-              className="bg-[#222222] border-none text-sm rounded-full px-4 py-2"
+              className="bg-[#222222] border-none text-sm rounded-full px-4 py-2 focus:ring-2 focus:ring-purple-500 focus:outline-none"
             >
               <option value="Daily">Daily</option>
               <option value="Weekly">Weekly</option>
@@ -185,18 +184,18 @@ export default function Dashboard() {
         </div>
 
         {/* All Days Data Grid */}
-        <div className="bg-[#111111] rounded-xl p-6 border border-[#222222] mb-8">
-          <h2 className="text-xl font-semibold mb-6">All Days Data</h2>
+        <div className="bg-[#111111] rounded-xl p-6 border border-[#222222] mb-8 shadow-lg">
+          <h2 className="text-xl font-semibold mb-6 text-purple-300">All Days Data</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {profitData.map((item, index) => {
               return (
                 <div key={index}>
                   <div 
-                    className="bg-[#1c1c1c] hover:bg-[#252525] border border-[#333333] rounded-lg p-4 cursor-pointer transition-all duration-200"
+                    className="bg-[#1c1c1c] hover:bg-[#252525] border border-[#333333] rounded-lg p-4 cursor-pointer transition-all duration-200 hover:shadow-xl"
                     onClick={() => {setShowDetails(!showDetails); setSelectedItem(item)}}
                   >
-                    <div className="text-sm text-gray-400">{formatDate(item.date)}</div>
-                    <div className="text-xl font-bold mt-1">${formatCurrency(item.totalProfitUSD)}</div>
+                    <div className="text-sm text-purple-300">{formatDate(item.date)}</div>
+                    <div className="text-xl font-bold mt-1 text-white">${formatCurrency(item.totalProfitUSD)}</div>
                   </div>
 
                   {showDetails && selectedItem === item && (
@@ -278,22 +277,16 @@ export default function Dashboard() {
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Total Profit
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    Orders
-                  </th>
                 </tr>
               </thead>
               <tbody className="bg-[#111111] divide-y divide-[#222222]">
                 {topDates.map((item, index) => (
                   <tr key={index} className="hover:bg-[#1c1c1c]">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td className="px-6 py-4 whitespace-nowrap font-medium text-purple-300">
                       {item.date}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <span className="text-green-400">${formatCurrency(item.totalProfitUSD)}</span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      {item.orders || 'N/A'}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-green-400 font-semibold">${formatCurrency(item.totalProfitUSD)}</span>
                     </td>
                   </tr>
                 ))}
