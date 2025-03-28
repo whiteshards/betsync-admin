@@ -1,58 +1,53 @@
+
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 
-export default function Sidebar({ username, onLogout }) {
+export default function TopNavbar({ username }) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const onLogout = () => {
+    Cookies.remove('isAuthenticated');
+    Cookies.remove('username');
+    router.push('/');
+  };
 
   return (
-    <div className="fixed left-0 top-0 h-full w-64 bg-white border-r border-gray-200 z-10 shadow-sm hidden md:block">
-      {/* Brand */}
-      <div className="h-16 border-b border-gray-200 flex items-center px-6">
-        <Link href="/dashboard" className="flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>
-          <span className="ml-2 text-lg font-semibold">BetSync</span>
-        </Link>
-      </div>
+    <div className="fixed w-full z-10 bg-[#111111] text-white py-4 px-6 shadow-md">
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className="flex items-center">
+          <div className="w-8 h-8 bg-purple-400 rounded-full flex items-center justify-center mr-3">
+            <span className="text-xl font-bold">L</span>
+          </div>
+          <span className="text-xl font-bold">BetSync</span>
+        </div>
+        
+        <div className="flex space-x-1">
+          <Link href="/dashboard" className={`px-4 py-2 rounded-full text-sm font-medium ${pathname === '/dashboard' ? 'bg-purple-600' : 'hover:bg-[#2a2a2a]'}`}>
+            Dashboard
+          </Link>
+          <Link href="/dashboard/servers" className={`px-4 py-2 rounded-full text-sm font-medium ${pathname === '/dashboard/servers' ? 'bg-purple-600' : 'hover:bg-[#2a2a2a]'}`}>
+            Servers
+          </Link>
+          <Link href="/dashboard/krizz1vxiw" className={`px-4 py-2 rounded-full text-sm font-medium ${pathname === '/dashboard/krizz1vxiw' ? 'bg-purple-600' : 'hover:bg-[#2a2a2a]'}`}>
+            Krizz1vxiw
+          </Link>
+        </div>
 
-      {/* Navigation */}
-      <div className="p-4">
-        <Link href="/dashboard" className={`flex items-center p-2 rounded-lg ${pathname === '/dashboard' ? 'bg-blue-50 text-blue-500' : 'text-gray-700 hover:bg-gray-50'}`}>
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-          </svg>
-          <span className="ml-3 text-sm font-medium">Dashboard</span>
-        </Link>
-
-        <Link href="/dashboard/servers" className={`flex items-center p-2 rounded-lg mt-1 ${pathname === '/dashboard/servers' ? 'bg-blue-50 text-blue-500' : 'text-gray-700 hover:bg-gray-50'}`}>
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
-          </svg>
-          <span className="ml-3 text-sm font-medium">Servers</span>
-        </Link>
-
-        <Link href="/dashboard/krizz1vxiw" className={`flex items-center p-2 rounded-lg mt-1 ${pathname === '/dashboard/krizz1vxiw' ? 'bg-blue-50 text-blue-500' : 'text-gray-700 hover:bg-gray-50'}`}>
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-          </svg>
-          <span className="ml-3 text-sm font-medium">Krizz1vxiw</span>
-        </Link>
-      </div>
-
-      {/* Logout at the bottom */}
-      <div className="p-4 border-t border-gray-200 mt-auto">
-        <button 
-          onClick={onLogout}
-          className="w-full flex items-center p-2 rounded-lg text-gray-700 hover:bg-gray-50"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-          </svg>
-          <span className="ml-3 text-sm font-medium">Logout</span>
-        </button>
+        <div className="flex items-center">
+          <span className="text-sm mr-4">{username}</span>
+          <button 
+            onClick={onLogout}
+            className="px-4 py-2 rounded-full text-sm bg-[#2a2a2a] hover:bg-[#333333]"
+          >
+            Logout
+          </button>
+        </div>
       </div>
     </div>
   );
