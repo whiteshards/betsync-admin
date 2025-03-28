@@ -172,42 +172,128 @@ export default function ProfitPage() {
           </div>
         )}
 
-        {/* History Table */}
-        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-          <h2 className="text-lg font-semibold mb-4">Profit History</h2>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead>
-                <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total USD Value</th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cryptocurrencies</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {profitData.map((item, index) => (
-                  <tr key={index}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{formatDate(item.date)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">${formatCurrency(item.totalProfitUSD)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {Object.entries(item.cryptoValues || {}).length > 0 ? (
+        {/* Profit History */}
+        {profitData.length > 0 && (
+          <div className="bg-white rounded-lg p-6 shadow-sm mb-6 border border-gray-100">
+            <h2 className="text-lg font-semibold mb-4">Profit History</h2>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead>
+                  <tr>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Profit (USD)</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Wallet Contents</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {profitData.map((item, index) => (
+                    <tr key={index}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{formatDate(item.date)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">${formatCurrency(item.totalProfitUSD)}</td>
+                      <td className="px-6 py-4 text-sm text-gray-500">
+                      {item.wallet && Object.keys(item.wallet).length > 0 ? (
                         <div className="flex flex-wrap gap-2">
-                          {Object.entries(item.cryptoValues).map(([crypto, data], idx) => (
-                            <span key={idx} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                              {crypto}: {data.amount} (${formatCurrency(data.valueUSD)})
-                            </span>
-                          ))}
+                          {Object.entries(item.wallet).map(([crypto, amount], idx) => {
+                            const valueData = item.cryptoValues?.[crypto];
+                            return (
+                              <span key={idx} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" 
+                                    style={{ backgroundColor: COLORS[idx % COLORS.length] + '20', color: COLORS[idx % COLORS.length] }}>
+                                {crypto}: {amount} 
+                                {valueData && (
+                                  <span className="ml-1 opacity-80">
+                                    (${formatCurrency(valueData.valueUSD)})
+                                  </span>
+                                )}
+                              </span>
+                            );
+                          })}
                         </div>
                       ) : (
-                        <span className="text-gray-400">No cryptocurrencies</span>
+                        <span className="text-gray-400">No wallet data</span>
                       )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* Detailed Cryptocurrency Table */}
+        {profitData.length > 0 && (
+          <div className="bg-white rounded-lg p-6 shadow-sm mb-6 border border-gray-100">
+            <h2 className="text-lg font-semibold mb-4">Cryptocurrency Details</h2>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead>
+                  <tr>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cryptocurrency</th>
+                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Price (USD)</th>
+                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Value (USD)</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {profitData.flatMap((item, dateIndex) => {
+                    // Only show cryptocurrencies that exist in the wallet
+                    if (!item.wallet || Object.keys(item.wallet).length === 0) {
+                      return [{
+                        id: `empty-${dateIndex}`,
+                        date: item.date,
+                        isEmpty: true
+                      }];
+                    }
+
+                    return Object.entries(item.wallet).map(([crypto, amount], cryptoIndex) => {
+                      const valueData = item.cryptoValues?.[crypto];
+                      return {
+                        id: `${dateIndex}-${cryptoIndex}`,
+                        date: item.date,
+                        crypto,
+                        amount,
+                        priceUSD: valueData?.priceUSD || 0,
+                        valueUSD: valueData?.valueUSD || 0
+                      };
+                    });
+                  }).map((row, index) => {
+                    if (row.isEmpty) {
+                      return (
+                        <tr key={row.id}>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{formatDate(row.date)}</td>
+                          <td className="px-6 py-4 text-sm text-gray-500" colSpan="4">
+                            <span className="text-gray-400">No cryptocurrencies</span>
+                          </td>
+                        </tr>
+                      );
+                    }
+
+                    return (
+                      <tr key={row.id}>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{formatDate(row.date)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="h-6 w-6 rounded-full flex items-center justify-center mr-2" 
+                                 style={{ backgroundColor: COLORS[index % COLORS.length] + '30' }}>
+                              <span className="text-xs font-bold" style={{ color: COLORS[index % COLORS.length] }}>
+                                {row.crypto.charAt(0)}
+                              </span>
+                            </div>
+                            <span className="font-medium">{row.crypto}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-right">{row.amount}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-right">${formatCurrency(row.priceUSD)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-right">${formatCurrency(row.valueUSD)}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
