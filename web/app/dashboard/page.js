@@ -31,7 +31,7 @@ export default function Dashboard() {
   const [averageProfit, setAverageProfit] = useState(0);
   const [selectedView, setSelectedView] = useState('Daily');
 
-  // Format currency with commas - defined once and used throughout the component
+  // Format currency with commas - defined globally for reuse throughout the component
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', { 
       style: 'decimal',
@@ -39,6 +39,11 @@ export default function Dashboard() {
       maximumFractionDigits: 2
     }).format(amount);
   };
+
+  // Initialize any state that might be conditionally rendered
+  // This fixes the issue with hooks being called in different orders
+  const [showDetails, setShowDetails] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   useEffect(() => {
     // Check if user is authenticated
@@ -152,18 +157,17 @@ export default function Dashboard() {
                 <h3 className="text-lg font-medium mb-4">All Days Data</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                   {profitData.map((item, index) => {
-                    const [showDetails, setShowDetails] = useState(false);
                     return (
                       <div key={index}>
                         <div 
                           className="bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg p-3 cursor-pointer transition-colors"
-                          onClick={() => setShowDetails(!showDetails)}
+                          onClick={() => {setShowDetails(!showDetails); setSelectedItem(item)}}
                         >
                           <div className="text-sm font-medium">{formatDate(item.date)}</div>
                           <div className="text-lg font-semibold">${formatCurrency(item.totalProfitUSD)}</div>
                         </div>
 
-                        {showDetails && (
+                        {showDetails && selectedItem === item && (
                           <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" onClick={() => setShowDetails(false)}>
                             <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
                               <div className="flex justify-between items-center mb-4">
