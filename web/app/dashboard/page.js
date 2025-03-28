@@ -5,7 +5,6 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { motion, AnimatePresence } from 'framer-motion';
 import TopNavbar from '../../components/sidebar';
 
 const COLORS = ['#8758FF', '#82ca9d', '#ffc658', '#ff8042', '#0088FE'];
@@ -112,104 +111,45 @@ export default function Dashboard() {
       <TopNavbar username={username} />
       
       <main className="pt-20 px-6 pb-10 max-w-7xl mx-auto">
-        <motion.div 
-          className="mb-8"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+        <div className="mb-8">
           <h1 className="text-4xl font-bold mb-1 bg-gradient-to-r from-purple-300 to-purple-500 bg-clip-text text-transparent">Welcome back, {username}</h1>
           <p className="text-gray-400">Here's your financial overview</p>
-        </motion.div>
+        </div>
 
         {/* Stats Overview */}
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <motion.div 
-            className="bg-[#111111] rounded-xl p-6 border border-[#222222]"
-            whileHover={{ 
-              scale: 1.02, 
-              boxShadow: "0 10px 25px rgba(0, 0, 0, 0.2)",
-              borderColor: "#333333"
-            }}
-            transition={{ duration: 0.2 }}
-          >
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-[#111111] rounded-xl p-6 border border-[#222222]">
             <p className="text-gray-400 text-sm mb-1">Total Revenue</p>
             <h2 className="text-3xl font-bold">${formatCurrency(totalRevenue)}</h2>
-          </motion.div>
+          </div>
 
-          <motion.div 
-            className="bg-[#111111] rounded-xl p-6 border border-[#222222]"
-            whileHover={{ 
-              scale: 1.02, 
-              boxShadow: "0 10px 25px rgba(0, 0, 0, 0.2)",
-              borderColor: "#333333"
-            }}
-            transition={{ duration: 0.2 }}
-          >
+          <div className="bg-[#111111] rounded-xl p-6 border border-[#222222]">
             <p className="text-gray-400 text-sm mb-1">Average Daily Income</p>
             <h2 className="text-3xl font-bold">${formatCurrency(averageProfit)}</h2>
-          </motion.div>
+          </div>
 
-          <motion.div 
-            className="bg-[#111111] rounded-xl p-6 border border-[#222222]"
-            whileHover={{ 
-              scale: 1.02, 
-              boxShadow: "0 10px 25px rgba(0, 0, 0, 0.2)",
-              borderColor: "#333333"
-            }}
-            transition={{ duration: 0.2 }}
-          >
+          <div className="bg-[#111111] rounded-xl p-6 border border-[#222222]">
             <p className="text-gray-400 text-sm mb-1">Total Days Recorded</p>
             <h2 className="text-3xl font-bold">{profitData.length}</h2>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
         {/* Chart */}
-        <motion.div 
-          className="bg-[#111111] rounded-xl p-6 border border-[#222222] mb-8 shadow-lg"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          whileHover={{ 
-            boxShadow: "0 15px 30px rgba(0, 0, 0, 0.3)",
-            borderColor: "#333333" 
-          }}
-        >
+        <div className="bg-[#111111] rounded-xl p-6 border border-[#222222] mb-8 shadow-lg">
           <div className="flex justify-between items-center mb-6">
-            <motion.h2 
-              className="text-xl font-semibold text-purple-300"
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-            >
-              Revenue Trend
-            </motion.h2>
-            <motion.select 
+            <h2 className="text-xl font-semibold text-purple-300">Revenue Trend</h2>
+            <select 
               value={selectedView} 
               onChange={handleViewChange}
               className="bg-[#222222] border-none text-sm rounded-full px-4 py-2 focus:ring-2 focus:ring-purple-500 focus:outline-none"
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              whileHover={{ scale: 1.05 }}
             >
               <option value="Daily">Daily</option>
               <option value="Weekly">Weekly</option>
               <option value="Monthly">Monthly</option>
-            </motion.select>
+            </select>
           </div>
 
-          <motion.div 
-            className="h-64"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.7, delay: 0.5 }}
-          >
+          <div className="h-64">
             {!loading && (
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart
@@ -240,78 +180,27 @@ export default function Dashboard() {
                 </LineChart>
               </ResponsiveContainer>
             )}
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
         {/* All Days Data Grid */}
-        <motion.div 
-          className="bg-[#111111] rounded-xl p-6 border border-[#222222] mb-8 shadow-lg"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          whileHover={{ 
-            boxShadow: "0 15px 30px rgba(0, 0, 0, 0.3)",
-            borderColor: "#333333" 
-          }}
-        >
-          <motion.h2 
-            className="text-xl font-semibold mb-6 text-purple-300"
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-          >
-            All Days Data
-          </motion.h2>
-          <motion.div 
-            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.7, delay: 0.7 }}
-          >
+        <div className="bg-[#111111] rounded-xl p-6 border border-[#222222] mb-8 shadow-lg">
+          <h2 className="text-xl font-semibold mb-6 text-purple-300">All Days Data</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {profitData.map((item, index) => {
               return (
-                <motion.div 
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.4, delay: 0.1 * index % 10 }}
-                >
-                  <motion.div 
-                    className="bg-[#1c1c1c] border border-[#333333] rounded-lg p-4 cursor-pointer"
+                <div key={index}>
+                  <div 
+                    className="bg-[#1c1c1c] hover:bg-[#252525] border border-[#333333] rounded-lg p-4 cursor-pointer transition-all duration-200 hover:shadow-xl"
                     onClick={() => {setShowDetails(!showDetails); setSelectedItem(item)}}
-                    whileHover={{ 
-                      scale: 1.05, 
-                      backgroundColor: "#252525", 
-                      boxShadow: "0 10px 25px rgba(0, 0, 0, 0.3)",
-                      borderColor: "#444444"
-                    }}
-                    transition={{ duration: 0.2 }}
                   >
                     <div className="text-sm text-purple-300">{formatDate(item.date)}</div>
                     <div className="text-xl font-bold mt-1 text-white">${formatCurrency(item.totalProfitUSD)}</div>
-                  </motion.div>
+                  </div>
 
                   {showDetails && selectedItem === item && (
-                    <motion.div 
-                      className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4" 
-                      onClick={() => setShowDetails(false)}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <motion.div 
-                        className="bg-[#111111] rounded-xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto border border-[#333333]" 
-                        onClick={e => e.stopPropagation()}
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0.8, opacity: 0 }}
-                        transition={{ 
-                          type: "spring", 
-                          stiffness: 300, 
-                          damping: 25 
-                        }}
-                      >
+                    <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4" onClick={() => setShowDetails(false)}>
+                      <div className="bg-[#111111] rounded-xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto border border-[#333333]" onClick={e => e.stopPropagation()}>
                         <div className="flex justify-between items-center mb-6">
                           <h3 className="text-xl font-bold">Details for {formatDate(item.date)}</h3>
                           <button 
@@ -366,40 +255,19 @@ export default function Dashboard() {
                         ) : (
                           <div className="text-gray-400">No wallet data available for this day.</div>
                         )}
-                      </motion.div>
-                    </motion.div>
+                      </div>
+                    </div>
                   )}
-                </motion.div>
+                </div>
               );
             })}
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
         {/* Top Performing Days */}
-        <motion.div 
-          className="bg-[#111111] rounded-xl p-6 border border-[#222222]"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.7 }}
-          whileHover={{ 
-            boxShadow: "0 15px 30px rgba(0, 0, 0, 0.3)",
-            borderColor: "#333333" 
-          }}
-        >
-          <motion.h2 
-            className="text-xl font-semibold mb-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.8 }}
-          >
-            Top Performing Days
-          </motion.h2>
-          <motion.div 
-            className="overflow-x-auto"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.9 }}
-          >
+        <div className="bg-[#111111] rounded-xl p-6 border border-[#222222]">
+          <h2 className="text-xl font-semibold mb-6">Top Performing Days</h2>
+          <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-[#333333]">
               <thead className="bg-[#111111]">
                 <tr>
@@ -413,26 +281,19 @@ export default function Dashboard() {
               </thead>
               <tbody className="bg-[#111111] divide-y divide-[#222222]">
                 {topDates.map((item, index) => (
-                  <motion.tr 
-                    key={index} 
-                    className="hover:bg-[#1c1c1c]"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.4, delay: 0.8 + (index * 0.1) }}
-                    whileHover={{ backgroundColor: "#1c1c1c", scale: 1.01 }}
-                  >
+                  <tr key={index} className="hover:bg-[#1c1c1c]">
                     <td className="px-6 py-4 whitespace-nowrap font-medium text-purple-300">
                       {item.date}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="text-green-400 font-semibold">${formatCurrency(item.totalProfitUSD)}</span>
                     </td>
-                  </motion.tr>
+                  </tr>
                 ))}
               </tbody>
             </table>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </main>
     </div>
   );
