@@ -10,6 +10,19 @@ import Sidebar from '../../components/sidebar';
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#0088FE'];
 
 export default function Dashboard() {
+  // Format date string
+  const formatDate = (dateString) => {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { 
+        month: '2-digit', 
+        day: '2-digit', 
+        year: 'numeric' 
+      });
+    } catch (e) {
+      return dateString;
+    }
+  };
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState('');
@@ -18,6 +31,15 @@ export default function Dashboard() {
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [averageProfit, setAverageProfit] = useState(0);
   const [selectedView, setSelectedView] = useState('Daily');
+  
+  // Format currency with commas
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', { 
+      style: 'decimal',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(amount);
+  };
 
   useEffect(() => {
     // Check if user is authenticated
@@ -132,6 +154,86 @@ export default function Dashboard() {
                   <option value="Monthly">Monthly</option>
                 </select>
                 <span className="text-xs text-gray-500">Showing data in chronological order</span>
+              </div>
+              
+              {/* All Days Data Section */}
+              <div className="mt-8 mb-6">
+                <h3 className="text-lg font-medium mb-4">All Days Data</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                  {profitData.map((item, index) => {
+                    const [showDetails, setShowDetails] = useState(false);
+                    return (
+                      <div key={index}>
+                        <div 
+                          className="bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg p-3 cursor-pointer transition-colors"
+                          onClick={() => setShowDetails(!showDetails)}
+                        >
+                          <div className="text-sm font-medium">{formatDate(item.date)}</div>
+                          <div className="text-lg font-semibold">${formatCurrency(item.totalProfitUSD)}</div>
+                        </div>
+                        
+                        {showDetails && (
+                          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" onClick={() => setShowDetails(false)}>
+                            <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+                              <div className="flex justify-between items-center mb-4">
+                                <h3 className="text-lg font-semibold">Details for {formatDate(item.date)}</h3>
+                                <button 
+                                  className="text-gray-500 hover:text-gray-700"
+                                  onClick={() => setShowDetails(false)}
+                                >
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                  </svg>
+                                </button>
+                              </div>
+                              
+                              <div className="mb-4">
+                                <div className="text-sm text-gray-500 mb-1">Total Value</div>
+                                <div className="text-xl font-bold">${formatCurrency(item.totalProfitUSD)}</div>
+                              </div>
+                              
+                              {item.cryptoValues && Object.keys(item.cryptoValues).length > 0 ? (
+                                <div>
+                                  <h4 className="font-medium mb-2">Wallet Details</h4>
+                                  <table className="min-w-full divide-y divide-gray-200">
+                                    <thead>
+                                      <tr>
+                                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cryptocurrency</th>
+                                        <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                        <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Price (USD)</th>
+                                        <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Value (USD)</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-200">
+                                      {Object.entries(item.cryptoValues).map(([crypto, data], i) => (
+                                        <tr key={i}>
+                                          <td className="px-4 py-2 whitespace-nowrap">
+                                            <div className="flex items-center">
+                                              <div className="h-6 w-6 rounded-full flex items-center justify-center mr-2" 
+                                                   style={{ backgroundColor: (COLORS[i % COLORS.length]) + '20' }}>
+                                                <span className="text-xs font-bold" style={{ color: COLORS[i % COLORS.length] }}>{crypto.charAt(0)}</span>
+                                              </div>
+                                              {crypto}
+                                            </div>
+                                          </td>
+                                          <td className="px-4 py-2 whitespace-nowrap text-right">{data.amount.toFixed(6)}</td>
+                                          <td className="px-4 py-2 whitespace-nowrap text-right">${formatCurrency(data.priceUSD)}</td>
+                                          <td className="px-4 py-2 whitespace-nowrap text-right">${formatCurrency(data.valueUSD)}</td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              ) : (
+                                <div className="text-sm text-gray-500">No wallet data available for this day.</div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
 
               <div className="h-64">
