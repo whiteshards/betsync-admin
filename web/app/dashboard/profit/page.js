@@ -1,23 +1,12 @@
-
 'use client';
 
-import { useState, useEffect } from 'react';
-import Sidebar from '@/components/Sidebar';
+import { useEffect, useState } from 'react';
+import Sidebar from '../../../components/Sidebar';
 import { 
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  PieChart, Pie, Cell
+  PieChart, Pie, Cell, BarChart, Bar
 } from 'recharts';
 
-// Define colors for different cryptocurrencies
-const CRYPTO_COLORS = {
-  BTC: '#F7931A',
-  ETH: '#627EEA',
-  SOL: '#00FFA3',
-  DOGE: '#C3A634',
-  USDT: '#26A17B'
-};
-
-// Pie chart colors
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 
 export default function ProfitPage() {
@@ -25,28 +14,28 @@ export default function ProfitPage() {
   const [cryptoPrices, setCryptoPrices] = useState({});
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState('Admin');
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch('/api/profit-data');
         const data = await response.json();
-        
+
         if (data && data.data) {
           setProfitData(data.data);
           setCryptoPrices(data.cryptoPrices || {});
         }
-        
+
         setLoading(false);
       } catch (error) {
         console.error('Error fetching profit data:', error);
         setLoading(false);
       }
     };
-    
+
     fetchData();
   }, []);
-  
+
   const handleLogout = () => {
     // Handle logout logic
     console.log('Logging out...');
@@ -61,6 +50,25 @@ export default function ProfitPage() {
     }).format(amount);
   };
 
+  // Format date from YYYY-MM-DD to more readable format
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+
+    // Check if the date is already in MM/DD/YYYY format
+    if (dateString.includes('/')) return dateString;
+
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { 
+        month: '2-digit', 
+        day: '2-digit', 
+        year: 'numeric' 
+      });
+    } catch (e) {
+      return dateString;
+    }
+  };
+
   // Get latest profit data
   const getLatestProfit = () => {
     if (profitData.length === 0) return { totalProfitUSD: 0, cryptoValues: {} };
@@ -71,7 +79,7 @@ export default function ProfitPage() {
   const getCryptoDistribution = () => {
     const latestData = getLatestProfit();
     if (!latestData || !latestData.cryptoValues) return [];
-    
+
     return Object.entries(latestData.cryptoValues).map(([crypto, data]) => ({
       name: crypto,
       value: data.valueUSD
@@ -94,24 +102,6 @@ export default function ProfitPage() {
           <h1 className="text-2xl font-bold">Profit Dashboard</h1>
         </div>
 
-        {/* Overview Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-lg p-6 shadow-sm flex flex-col border border-gray-100">
-            <h2 className="text-sm font-medium text-gray-500 mb-2">Total Profit (USD)</h2>
-            <p className="text-2xl font-semibold text-blue-600">${formatCurrency(getLatestProfit().totalProfitUSD)}</p>
-          </div>
-          
-          {/* Current Crypto Prices */}
-          {Object.entries(cryptoPrices).map(([crypto, price], index) => (
-            <div key={index} className="bg-white rounded-lg p-6 shadow-sm flex flex-col border border-gray-100">
-              <h2 className="text-sm font-medium text-gray-500 mb-2">{crypto.toUpperCase()} Price</h2>
-              <p className="text-2xl font-semibold" style={{ color: CRYPTO_COLORS[crypto.toUpperCase()] || '#333' }}>
-                ${formatCurrency(price)}
-              </p>
-            </div>
-          ))}
-        </div>
-
         {/* Profit Over Time Chart */}
         {profitData.length > 0 && (
           <div className="bg-white rounded-lg p-6 shadow-sm mb-6 border border-gray-100">
@@ -119,7 +109,10 @@ export default function ProfitPage() {
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart
-                  data={profitData}
+                  data={profitData.map(item => ({
+                    ...item,
+                    date: formatDate(item.date)
+                  }))}
                   margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" />
@@ -134,13 +127,12 @@ export default function ProfitPage() {
           </div>
         )}
 
-        {/* Crypto Distribution */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          {/* Pie Chart */}
-          {getCryptoDistribution().length > 0 && (
-            <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-              <h2 className="text-lg font-semibold mb-4">Cryptocurrency Distribution</h2>
-              <div className="h-80">
+        {/* Cryptocurrency Distribution */}
+        {profitData.length > 0 && (
+          <div className="bg-white rounded-lg p-6 shadow-sm mb-6 border border-gray-100">
+            <h2 className="text-lg font-semibold mb-4">Latest Cryptocurrency Distribution</h2>
+            <div className="h-80 flex flex-col md:flex-row items-center justify-center">
+              <div className="w-full md:w-1/2 h-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
@@ -155,54 +147,30 @@ export default function ProfitPage() {
                       label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                     >
                       {getCryptoDistribution().map((entry, index) => (
-                        <Cell 
-                          key={`cell-${index}`} 
-                          fill={CRYPTO_COLORS[entry.name] || COLORS[index % COLORS.length]} 
-                        />
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
                     <Tooltip formatter={(value) => ['$' + formatCurrency(value), '']} />
-                    <Legend />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
-            </div>
-          )}
-
-          {/* Wallet Details */}
-          {Object.keys(getLatestProfit().cryptoValues || {}).length > 0 && (
-            <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-              <h2 className="text-lg font-semibold mb-4">Latest Wallet Details</h2>
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead>
-                  <tr>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cryptocurrency</th>
-                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Price (USD)</th>
-                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Value (USD)</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {Object.entries(getLatestProfit().cryptoValues || {}).map(([crypto, data], index) => (
-                    <tr key={index}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="h-8 w-8 rounded-full flex items-center justify-center mr-3" style={{ backgroundColor: (CRYPTO_COLORS[crypto] || '#8884d8') + '20' }}>
-                            <span className="font-medium" style={{ color: CRYPTO_COLORS[crypto] || '#8884d8' }}>{crypto.substring(0, 1)}</span>
-                          </div>
-                          <span className="font-medium">{crypto}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">{data.amount.toFixed(8)}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">${formatCurrency(data.priceUSD)}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right">${formatCurrency(data.valueUSD)}</td>
-                    </tr>
+              <div className="w-full md:w-1/2 mt-4 md:mt-0">
+                <h3 className="text-sm font-medium mb-2">Latest Values</h3>
+                <ul className="space-y-2">
+                  {Object.entries(getLatestProfit().cryptoValues || {}).map(([crypto, data], idx) => (
+                    <li key={idx} className="flex justify-between items-center">
+                      <div className="flex items-center">
+                        <span className="h-3 w-3 rounded-full mr-2" style={{ backgroundColor: COLORS[idx % COLORS.length] }}></span>
+                        <span className="text-sm">{crypto}</span>
+                      </div>
+                      <span className="text-sm font-medium">${formatCurrency(data.valueUSD)}</span>
+                    </li>
                   ))}
-                </tbody>
-              </table>
+                </ul>
+              </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* History Table */}
         <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
@@ -219,20 +187,19 @@ export default function ProfitPage() {
               <tbody className="divide-y divide-gray-200">
                 {profitData.map((item, index) => (
                   <tr key={index}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.date}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{formatDate(item.date)}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">${formatCurrency(item.totalProfitUSD)}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {Object.keys(item.wallet || {}).length > 0 ? (
+                      {Object.entries(item.cryptoValues || {}).length > 0 ? (
                         <div className="flex flex-wrap gap-2">
-                          {Object.entries(item.wallet).map(([crypto, amount], idx) => (
-                            <span key={idx} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" 
-                              style={{ backgroundColor: (CRYPTO_COLORS[crypto] || '#8884d8') + '20', color: CRYPTO_COLORS[crypto] || '#8884d8' }}>
-                              {crypto}: {amount.toFixed(8)}
+                          {Object.entries(item.cryptoValues).map(([crypto, data], idx) => (
+                            <span key={idx} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                              {crypto}: {data.amount} (${formatCurrency(data.valueUSD)})
                             </span>
                           ))}
                         </div>
                       ) : (
-                        'None'
+                        <span className="text-gray-400">No cryptocurrencies</span>
                       )}
                     </td>
                   </tr>

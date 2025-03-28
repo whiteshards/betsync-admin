@@ -49,8 +49,10 @@ export async function GET() {
       
       // Process wallet if it exists
       if (item.wallet) {
+        // Only process available cryptocurrencies (non-zero values)
         Object.entries(item.wallet).forEach(([crypto, amount]) => {
-          if (amount > 0) { // Only include crypto with non-zero values
+          // Only include crypto with values
+          if (amount && amount !== 0) {
             const price = cryptoPrices[crypto.toLowerCase()] || 0;
             const valueUSD = amount * price;
             cryptoValues[crypto] = {
@@ -71,17 +73,11 @@ export async function GET() {
       };
     });
     
-    // Sort by date chronologically (MM/DD/YYYY format)
+    // Sort by date chronologically (YYYY-MM-DD format from the database)
     processedData.sort((a, b) => {
-      const [aMonth, aDay, aYear] = a.date.split('/').map(Number);
-      const [bMonth, bDay, bYear] = b.date.split('/').map(Number);
-      
-      // Compare years first
-      if (aYear !== bYear) return aYear - bYear;
-      // Then compare months
-      if (aMonth !== bMonth) return aMonth - bMonth;
-      // Finally compare days
-      return aDay - bDay;
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      return dateA - dateB;
     });
     
     return NextResponse.json({ 
