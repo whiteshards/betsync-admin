@@ -103,7 +103,7 @@ export default function ServersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#111111] text-white">
+    <div className="min-h-screen bg-[#111111] text-white font-['Arial', sans-serif]"> {/* Added font-family here */}
       <TopNavbar username={username} />
 
       <main className="pt-20 px-6 pb-6">

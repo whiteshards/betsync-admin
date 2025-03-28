@@ -61,7 +61,7 @@ export default function FetchPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#111111] text-white">
+    <div className="min-h-screen bg-[#111111] text-white font-inter"> {/* Added font-inter class */}
       <TopNavbar username={username} />
 
       <div className="pt-20 px-6 pb-6 max-w-7xl mx-auto">
@@ -76,19 +76,19 @@ export default function FetchPage() {
               value={serverId}
               onChange={(e) => setServerId(e.target.value)}
               placeholder="Enter server ID"
-              className="flex-1 bg-[#2a2a2a] border border-[#333333] rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-white"
+              className="flex-1 bg-[#2a2a2a] border border-[#333333] rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-white font-inter" {/* Added font-inter class */}
             />
             <button
               onClick={fetchServerData}
               disabled={loading}
-              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50"
+              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 font-inter" {/* Added font-inter class */}
             >
               {loading ? 'Loading...' : 'Fetch Server'}
             </button>
           </div>
 
           {error && (
-            <div className="mt-4 bg-red-900/20 border border-red-800 text-red-400 px-4 py-3 rounded-lg">
+            <div className="mt-4 bg-red-900/20 border border-red-800 text-red-400 px-4 py-3 rounded-lg font-inter"> {/* Added font-inter class */}
               {error}
             </div>
           )}
@@ -96,11 +96,11 @@ export default function FetchPage() {
 
         {serverData && (
           <div className="bg-[#1a1a1a] rounded-xl p-6 shadow-md border border-[#2a2a2a]">
-            <h2 className="text-xl font-semibold mb-4">{serverData.serverName}</h2>
+            <h2 className="text-xl font-semibold mb-4 font-inter"> {/* Added font-inter class */} {serverData.serverName}</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
-                <div className="bg-[#222222] rounded-lg p-4 border border-[#2a2a2a]">
+                <div className="bg-[#222222] rounded-lg p-4 border border-[#2a2a2a] font-inter"> {/* Added font-inter class */}
                   <h3 className="text-lg font-medium mb-2">Server Information</h3>
                   <p className="text-gray-300">ID: {serverData.serverId}</p>
                   <p className="text-gray-300">Members: {serverData.memberCount}</p>
@@ -111,10 +111,10 @@ export default function FetchPage() {
               </div>
 
               <div className="space-y-4">
-                <div className="bg-[#222222] rounded-lg p-4 border border-[#2a2a2a]">
+                <div className="bg-[#222222] rounded-lg p-4 border border-[#2a2a2a] font-inter"> {/* Added font-inter class */}
                   <h3 className="text-lg font-medium mb-2">Crypto Wallets</h3>
                   {Object.entries(serverData.cryptoValues).map(([crypto, data]) => (
-                    <div key={crypto} className="flex justify-between items-center mb-2">
+                    <div key={crypto} className="flex justify-between items-center mb-2 font-inter"> {/* Added font-inter class */}
                       <div className="flex items-center">
                         <div 
                           className="w-3 h-3 rounded-full mr-2"

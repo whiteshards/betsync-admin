@@ -25,26 +25,27 @@ export default function TopNavbar({ username }) {
           <div className="w-8 h-8 mr-3">
             <Image src="/logo.webp" alt="BetSync Logo" width={32} height={32} className="rounded-lg" />
           </div>
-          <span className="text-xl font-bold">BetSync</span>
+          <span className="text-xl font-bold" style={{fontFamily: 'Inter, sans-serif'}}>BetSync</span>
         </div>
         
         <div className="flex space-x-1">
-          <Link href="/dashboard" className={`px-4 py-2 rounded-full text-sm font-medium ${pathname === '/dashboard' ? 'bg-purple-600' : 'hover:bg-[#2a2a2a]'}`}>
+          <Link href="/dashboard" className={`px-4 py-2 rounded-full text-sm font-medium ${pathname === '/dashboard' ? 'bg-purple-600' : 'hover:bg-[#2a2a2a]'}`} style={{fontFamily: 'Inter, sans-serif'}}>
             Dashboard
           </Link>
-          <Link href="/dashboard/servers" className={`px-4 py-2 rounded-full text-sm font-medium ${pathname === '/dashboard/servers' ? 'bg-purple-600' : 'hover:bg-[#2a2a2a]'}`}>
+          <Link href="/dashboard/servers" className={`px-4 py-2 rounded-full text-sm font-medium ${pathname === '/dashboard/servers' ? 'bg-purple-600' : 'hover:bg-[#2a2a2a]'}`} style={{fontFamily: 'Inter, sans-serif'}}>
             Servers
           </Link>
-          <Link href="/fetch" className={`px-4 py-2 rounded-full text-sm font-medium ${pathname === '/fetch' ? 'bg-purple-600' : 'hover:bg-[#2a2a2a]'}`}>
+          <Link href="/fetch" className={`px-4 py-2 rounded-full text-sm font-medium ${pathname === '/fetch' ? 'bg-purple-600' : 'hover:bg-[#2a2a2a]'}`} style={{fontFamily: 'Inter, sans-serif'}}>
             Fetch
           </Link>
         </div>
 
         <div className="flex items-center">
-          <span className="text-sm mr-4">{username}</span>
+          <span className="text-sm mr-4" style={{fontFamily: 'Inter, sans-serif'}}>{username}</span>
           <button 
             onClick={onLogout}
-            className="px-4 py-2 rounded-full text-sm bg-[#2a2a2a] hover:bg-[#333333]"
+            className="px-4 py-2 rounded-full text-sm bg-[#2a2a2a] hover:bg-[#333333]" 
+            style={{fontFamily: 'Inter, sans-serif'}}
           >
             Logout
           </button>
