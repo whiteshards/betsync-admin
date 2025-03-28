@@ -373,7 +373,7 @@ export default function Dashboard() {
               );
             })}
           </div>
-        </div>
+        </motion.div>
 
         {/* Top Performing Days */}
         <motion.div 
