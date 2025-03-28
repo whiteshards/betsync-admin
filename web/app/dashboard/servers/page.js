@@ -103,7 +103,7 @@ export default function ServersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#111111] text-white font-['Arial', sans-serif]"> {/* Added font-family here */}
+    <div className="min-h-screen bg-[#111111] text-white font-sans"> {/* Added font-family here */}
       <TopNavbar username={username} />
 
       <main className="pt-20 px-6 pb-6">
@@ -126,7 +126,7 @@ export default function ServersPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
-                    <div className="bg-[#222222] rounded-lg p-4 border border-[#2a2a2a] font-inter">
+                    <div className="bg-[#222222] rounded-lg p-4 border border-[#2a2a2a] font-sans">
                       <h3 className="text-lg font-medium mb-2">Server Information</h3>
                       <p className="text-gray-300">ID: {selectedServer.serverId || 'N/A'}</p>
                       <p className="text-gray-300">Members: {selectedServer.memberCount || 0}</p>
@@ -135,7 +135,7 @@ export default function ServersPage() {
                       <p className="text-gray-300">Profit: ${formatCurrency(selectedServer.totalProfitUSD || 0)}</p>
                     </div>
 
-                    <div className="bg-[#222222] rounded-lg p-4 border border-[#2a2a2a] font-inter">
+                    <div className="bg-[#222222] rounded-lg p-4 border border-[#2a2a2a] font-sans">
                       <h3 className="text-lg font-medium mb-2">Crypto Wallets</h3>
                       {Object.entries(selectedServer.cryptoValues || {}).map(([crypto, data]) => (
                         <div key={crypto} className="flex justify-between items-center mb-2">
@@ -225,8 +225,8 @@ export default function ServersPage() {
                 </div>
 
                 <div className="bg-[#1a1a1a] rounded-xl p-6 shadow-md border border-[#2a2a2a]">
-                  <h2 className="text-lg font-medium mb-4">Total Profit</h2>
-                  <p className="text-3xl font-semibold">
+                  <h2 className="text-lg font-medium mb-4 font-sans">Total Profit</h2>
+                  <p className="text-3xl font-semibold font-sans">
                     ${formatCurrency(serverData?.reduce((sum, server) => sum + server.totalProfitUSD, 0) || 0)}
                   </p>
                 </div>

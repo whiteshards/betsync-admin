@@ -35,7 +35,7 @@
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: sans-serif;
   font-weight: 400;
   background: linear-gradient(135deg, #111111 0%, #000000 100%);
   color: var(--foreground);
