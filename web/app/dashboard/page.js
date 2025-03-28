@@ -366,10 +366,10 @@ export default function Dashboard() {
                         ) : (
                           <div className="text-gray-400">No wallet data available for this day.</div>
                         )}
-                      </div>
-                    </div>
+                      </motion.div>
+                    </motion.div>
                   )}
-                </div>
+                </motion.div>
               );
             })}
           </div>
