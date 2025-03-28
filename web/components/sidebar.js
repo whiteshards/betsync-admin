@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function TopNavbar({ username }) {
   const pathname = usePathname();
