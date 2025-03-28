@@ -178,7 +178,7 @@ export default function ServersPage() {
                 </div>
               </div>
 
-              {selectedServer.transactions.length > 0 && (
+              {selectedServer?.transactions && selectedServer.transactions.length > 0 && (
                 <div className="bg-[#1a1a1a] rounded-xl p-6 shadow-md border border-[#2a2a2a]">
                   <h3 className="text-lg font-medium mb-4">Recent Transactions</h3>
                   <div className="overflow-x-auto">
@@ -193,7 +193,7 @@ export default function ServersPage() {
                         </tr>
                       </thead>
                       <tbody className="bg-[#1a1a1a] divide-y divide-[#2a2a2a]">
-                        {selectedServer.transactions.slice(0, 5).map((tx, index) => (
+                        {selectedServer?.transactions?.slice(0, 5).map((tx, index) => (
                           <tr key={index}>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{new Date(tx.timestamp).toLocaleString()}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{tx.userId}</td>
@@ -221,20 +221,20 @@ export default function ServersPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <div className="bg-[#1a1a1a] rounded-xl p-6 shadow-md border border-[#2a2a2a]">
                   <h2 className="text-lg font-medium mb-4">Total Servers</h2>
-                  <p className="text-3xl font-semibold">{serverData.length}</p>
+                  <p className="text-3xl font-semibold">{serverData?.length || 0}</p>
                 </div>
 
                 <div className="bg-[#1a1a1a] rounded-xl p-6 shadow-md border border-[#2a2a2a]">
                   <h2 className="text-lg font-medium mb-4">Total Volume</h2>
                   <p className="text-3xl font-semibold">
-                    ${formatCurrency(serverData.reduce((sum, server) => sum + server.totalVolumeUSD, 0))}
+                    ${formatCurrency(serverData?.reduce((sum, server) => sum + server.totalVolumeUSD, 0) || 0)}
                   </p>
                 </div>
 
                 <div className="bg-[#1a1a1a] rounded-xl p-6 shadow-md border border-[#2a2a2a]">
                   <h2 className="text-lg font-medium mb-4">Total Profit</h2>
                   <p className="text-3xl font-semibold">
-                    ${formatCurrency(serverData.reduce((sum, server) => sum + server.totalProfitUSD, 0))}
+                    ${formatCurrency(serverData?.reduce((sum, server) => sum + server.totalProfitUSD, 0) || 0)}
                   </p>
                 </div>
               </div>
@@ -255,7 +255,7 @@ export default function ServersPage() {
                           </tr>
                         </thead>
                         <tbody className="bg-[#1a1a1a] divide-y divide-[#2a2a2a]">
-                          {serverData.map((server) => (
+                          {serverData?.map((server) => (
                             <tr key={server.serverId}>
                               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-200">{server.serverName}</td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{server.memberCount}</td>
