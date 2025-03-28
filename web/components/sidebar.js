@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
+import Image from 'next/image';
 
 export default function TopNavbar({ username }) {
   const pathname = usePathname();
@@ -21,8 +22,8 @@ export default function TopNavbar({ username }) {
     <div className="fixed w-full z-10 bg-[#111111] text-white py-4 px-6 shadow-md">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center">
-          <div className="w-8 h-8 bg-purple-400 rounded-full flex items-center justify-center mr-3">
-            <span className="text-xl font-bold">L</span>
+          <div className="w-8 h-8 mr-3">
+            <Image src="/logo.webp" alt="BetSync Logo" width={32} height={32} className="rounded-lg" />
           </div>
           <span className="text-xl font-bold">BetSync</span>
         </div>
@@ -36,6 +37,9 @@ export default function TopNavbar({ username }) {
           </Link>
           <Link href="/dashboard/krizz1vxiw" className={`px-4 py-2 rounded-full text-sm font-medium ${pathname === '/dashboard/krizz1vxiw' ? 'bg-purple-600' : 'hover:bg-[#2a2a2a]'}`}>
             Krizz1vxiw
+          </Link>
+          <Link href="/fetch" className={`px-4 py-2 rounded-full text-sm font-medium ${pathname === '/fetch' ? 'bg-purple-600' : 'hover:bg-[#2a2a2a]'}`}>
+            Fetch
           </Link>
         </div>
 

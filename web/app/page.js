@@ -2,11 +2,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Inter, Montserrat } from 'next/font/google';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
+import { Montserrat } from 'next/font/google';
+import Image from 'next/image';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const montserrat = Montserrat({ subsets: ['latin'], variable: '--font-montserrat' });
 
 export default function Home() {
@@ -36,33 +36,36 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-gray-800">
+    <div className="min-h-screen bg-[#111111] text-white flex flex-col">
       {/* Navbar */}
-      <nav className="bg-white border-b border-gray-200 py-3 shadow-sm">
-        <div className="max-w-7xl mx-auto flex items-center px-3">
-          <h1 className="text-lg md:text-xl font-bold text-gray-800">
-            BetSync Admin Panel
-          </h1>
+      <nav className="bg-[#111111] border-b border-[#2a2a2a] py-4 px-6 shadow-md">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center">
+            <div className="w-8 h-8 mr-3">
+              <Image src="/logo.webp" alt="BetSync Logo" width={32} height={32} className="rounded-lg" />
+            </div>
+            <h1 className="text-xl font-bold">BetSync Admin Panel</h1>
+          </div>
         </div>
       </nav>
 
-      {/* Login form */}
-      <div className="flex items-center justify-center min-h-[calc(100vh-54px)] px-4">
-        <div className="bg-white rounded-lg shadow-md p-6 md:p-8 w-full max-w-sm border border-gray-200">
-          <div className="text-center mb-6">
-            <h2 className="text-lg font-bold mb-1 text-gray-800">Admin Login</h2>
-            <p className="text-gray-600 text-sm">Enter your credentials to access the panel</p>
+      {/* Login Form */}
+      <div className="flex-1 flex items-center justify-center p-6">
+        <div className="w-full max-w-md bg-[#1a1a1a] rounded-xl shadow-lg p-8 border border-[#2a2a2a]">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold mb-2">Welcome back</h2>
+            <p className="text-gray-400">Sign in to continue to BetSync</p>
           </div>
-          
+
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-600 px-3 py-2 rounded text-sm">
+              <div className="bg-red-900/20 border border-red-800 text-red-400 px-4 py-3 rounded-lg text-sm">
                 {error}
               </div>
             )}
-            
-            <div className="space-y-1">
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+
+            <div className="space-y-2">
+              <label htmlFor="username" className="block text-sm font-medium text-gray-300">
                 Username
               </label>
               <input
@@ -70,13 +73,13 @@ export default function Home() {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full bg-white border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent transition-all text-gray-800"
+                className="w-full bg-[#2a2a2a] border border-[#333333] rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-white"
                 required
               />
             </div>
-            
-            <div className="space-y-1">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+
+            <div className="space-y-2">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-300">
                 Password
               </label>
               <input
@@ -84,16 +87,16 @@ export default function Home() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-white border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent transition-all text-gray-800"
+                className="w-full bg-[#2a2a2a] border border-[#333333] rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-white"
                 required
               />
             </div>
-            
+
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-medium transition-all"
+              className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg transition duration-150 ease-in-out"
             >
-              Sign In
+              Sign in
             </button>
           </form>
         </div>
