@@ -126,18 +126,18 @@ export default function ServersPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
-                    <div className="bg-[#222222] rounded-lg p-4 border border-[#2a2a2a]">
+                    <div className="bg-[#222222] rounded-lg p-4 border border-[#2a2a2a] font-inter">
                       <h3 className="text-lg font-medium mb-2">Server Information</h3>
-                      <p className="text-gray-300">ID: {selectedServer.serverId}</p>
-                      <p className="text-gray-300">Members: {selectedServer.memberCount}</p>
-                      <p className="text-gray-300">Transactions: {selectedServer.transactions?.length}</p>
-                      <p className="text-gray-300">Total Volume: ${formatCurrency(selectedServer.totalVolumeUSD)}</p>
-                      <p className="text-gray-300">Profit: ${formatCurrency(selectedServer.totalProfitUSD)}</p>
+                      <p className="text-gray-300">ID: {selectedServer.serverId || 'N/A'}</p>
+                      <p className="text-gray-300">Members: {selectedServer.memberCount || 0}</p>
+                      <p className="text-gray-300">Transactions: {selectedServer.transactions?.length || 0}</p>
+                      <p className="text-gray-300">Total Volume: ${formatCurrency(selectedServer.totalVolumeUSD || 0)}</p>
+                      <p className="text-gray-300">Profit: ${formatCurrency(selectedServer.totalProfitUSD || 0)}</p>
                     </div>
 
-                    <div className="bg-[#222222] rounded-lg p-4 border border-[#2a2a2a]">
+                    <div className="bg-[#222222] rounded-lg p-4 border border-[#2a2a2a] font-inter">
                       <h3 className="text-lg font-medium mb-2">Crypto Wallets</h3>
-                      {Object.entries(selectedServer.cryptoValues).map(([crypto, data]) => (
+                      {Object.entries(selectedServer.cryptoValues || {}).map(([crypto, data]) => (
                         <div key={crypto} className="flex justify-between items-center mb-2">
                           <div className="flex items-center">
                             <div 
@@ -146,13 +146,13 @@ export default function ServersPage() {
                             ></div>
                             <span>{crypto}</span>
                           </div>
-                          <span>${formatCurrency(data.valueUSD)}</span>
+                          <span>${formatCurrency(data.valueUSD || 0)}</span>
                         </div>
                       ))}
                     </div>
                   </div>
 
-                  <div className="bg-[#222222] rounded-lg p-4 border border-[#2a2a2a] flex flex-col h-full">
+                  <div className="bg-[#222222] rounded-lg p-4 border border-[#2a2a2a] font-inter flex flex-col h-full">
                     <h3 className="text-lg font-medium mb-2">Wallet Distribution</h3>
                     <div className="flex-1 min-h-[200px]">
                       <ResponsiveContainer width="100%" height="100%">
