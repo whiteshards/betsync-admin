@@ -4,10 +4,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
-import { Montserrat } from 'next/font/google';
 import Image from 'next/image';
 
-const montserrat = Montserrat({ subsets: ['latin'], variable: '--font-montserrat' });
+// Using Inter font consistently across the application
 
 export default function Home() {
   const [username, setUsername] = useState('');

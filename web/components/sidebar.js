@@ -35,9 +35,6 @@ export default function TopNavbar({ username }) {
           <Link href="/dashboard/servers" className={`px-4 py-2 rounded-full text-sm font-medium ${pathname === '/dashboard/servers' ? 'bg-purple-600' : 'hover:bg-[#2a2a2a]'}`}>
             Servers
           </Link>
-          <Link href="/dashboard/krizz1vxiw" className={`px-4 py-2 rounded-full text-sm font-medium ${pathname === '/dashboard/krizz1vxiw' ? 'bg-purple-600' : 'hover:bg-[#2a2a2a]'}`}>
-            Krizz1vxiw
-          </Link>
           <Link href="/fetch" className={`px-4 py-2 rounded-full text-sm font-medium ${pathname === '/fetch' ? 'bg-purple-600' : 'hover:bg-[#2a2a2a]'}`}>
             Fetch
           </Link>
