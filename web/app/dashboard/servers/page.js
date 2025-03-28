@@ -218,17 +218,10 @@ export default function ServersPage() {
             <div>
               <h1 className="text-2xl font-semibold mb-6">Servers Overview</h1>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div className="bg-[#1a1a1a] rounded-xl p-6 shadow-md border border-[#2a2a2a]">
                   <h2 className="text-lg font-medium mb-4">Total Servers</h2>
                   <p className="text-3xl font-semibold">{serverData?.length || 0}</p>
-                </div>
-
-                <div className="bg-[#1a1a1a] rounded-xl p-6 shadow-md border border-[#2a2a2a]">
-                  <h2 className="text-lg font-medium mb-4">Total Volume</h2>
-                  <p className="text-3xl font-semibold">
-                    ${formatCurrency(serverData?.reduce((sum, server) => sum + server.totalVolumeUSD, 0) || 0)}
-                  </p>
                 </div>
 
                 <div className="bg-[#1a1a1a] rounded-xl p-6 shadow-md border border-[#2a2a2a]">
