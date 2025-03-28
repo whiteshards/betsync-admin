@@ -294,6 +294,126 @@ export default function ProfitPage() {
             </div>
           </div>
         )}
+
+        {/* Interactive Wallet Data Visualization */}
+        {profitData.length > 0 && (
+          <div className="bg-white rounded-lg p-6 shadow-sm mb-6 border border-gray-100 mt-6">
+            <h2 className="text-lg font-semibold mb-4">Cryptocurrency Data by Day (Click for Details)</h2>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead>
+                  <tr>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Overview</th>
+                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total Value</th>
+                    <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {profitData.map((item, index) => {
+                    const [expanded, setExpanded] = useState(false);
+                    const toggleExpand = () => setExpanded(!expanded);
+
+                    return (
+                      <React.Fragment key={index}>
+                        <tr className={expanded ? "bg-gray-50" : ""}>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{formatDate(item.date)}</td>
+                          <td className="px-6 py-4 text-sm text-gray-500">
+                            {item.wallet && Object.keys(item.wallet).length > 0 ? (
+                              <div className="flex flex-wrap gap-2">
+                                {Object.entries(item.wallet).map(([crypto, amount], idx) => (
+                                  <span key={idx} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" 
+                                        style={{ backgroundColor: COLORS[idx % COLORS.length] + '20', color: COLORS[idx % COLORS.length] }}>
+                                    {crypto}: {amount}
+                                  </span>
+                                ))}
+                              </div>
+                            ) : (
+                              <span className="text-gray-400">No wallet data</span>
+                            )}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-right text-gray-500">
+                            ${formatCurrency(item.totalProfitUSD)}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-center">
+                            <button 
+                              onClick={toggleExpand}
+                              className="text-indigo-600 hover:text-indigo-900 transition-colors"
+                            >
+                              {expanded ? (
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                                </svg>
+                              ) : (
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                              )}
+                              {expanded ? "Hide Details" : "View Details"}
+                            </button>
+                          </td>
+                        </tr>
+
+                        {/* Expanded Details Row */}
+                        {expanded && (
+                          <tr>
+                            <td colSpan="4" className="px-6 py-4 bg-gray-50 border-t border-gray-100">
+                              <div className="overflow-hidden transition-all duration-500">
+                                <h3 className="text-sm font-semibold mb-3">Detailed Wallet Information</h3>
+                                {item.wallet && Object.keys(item.wallet).length > 0 ? (
+                                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    {Object.entries(item.wallet).map(([crypto, amount], idx) => {
+                                      const valueData = item.cryptoValues?.[crypto];
+                                      return (
+                                        <div key={idx} className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                                          <div className="flex items-center mb-2">
+                                            <div className="h-8 w-8 rounded-full flex items-center justify-center mr-3" 
+                                                 style={{ backgroundColor: COLORS[idx % COLORS.length] + '20' }}>
+                                              <span className="text-sm font-bold" style={{ color: COLORS[idx % COLORS.length] }}>
+                                                {crypto.charAt(0)}
+                                              </span>
+                                            </div>
+                                            <span className="text-md font-medium">{crypto}</span>
+                                          </div>
+
+                                          <div className="grid grid-cols-2 gap-2 text-sm">
+                                            <div>
+                                              <p className="text-gray-500">Amount:</p>
+                                              <p className="font-medium">{amount}</p>
+                                            </div>
+
+                                            {valueData && (
+                                              <>
+                                                <div>
+                                                  <p className="text-gray-500">Price (USD):</p>
+                                                  <p className="font-medium">${formatCurrency(valueData.priceUSD)}</p>
+                                                </div>
+                                                <div className="col-span-2">
+                                                  <p className="text-gray-500">Total Value (USD):</p>
+                                                  <p className="font-medium text-indigo-600">${formatCurrency(valueData.valueUSD)}</p>
+                                                </div>
+                                              </>
+                                            )}
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                ) : (
+                                  <div className="text-center py-4 text-gray-500">No cryptocurrency data available for this day</div>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
