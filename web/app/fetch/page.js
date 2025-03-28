@@ -76,19 +76,19 @@ export default function FetchPage() {
               value={serverId}
               onChange={(e) => setServerId(e.target.value)}
               placeholder="Enter server ID"
-              className="flex-1 bg-[#2a2a2a] border border-[#333333] rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-white font-inter" {/* Added font-inter class */}
+              className="flex-1 bg-[#2a2a2a] border border-[#333333] rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-white font-inter"
             />
             <button
               onClick={fetchServerData}
               disabled={loading}
-              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 font-inter" {/* Added font-inter class */}
+              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 font-inter"
             >
               {loading ? 'Loading...' : 'Fetch Server'}
             </button>
           </div>
 
           {error && (
-            <div className="mt-4 bg-red-900/20 border border-red-800 text-red-400 px-4 py-3 rounded-lg font-inter"> {/* Added font-inter class */}
+            <div className="mt-4 bg-red-900/20 border border-red-800 text-red-400 px-4 py-3 rounded-lg font-inter">
               {error}
             </div>
           )}
