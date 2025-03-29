@@ -9,7 +9,7 @@
   --secondary: #6c757d;
   --card-bg: #111111;
   --card-border: #333333;
-  --radius: 0.625rem;
+  --radius: 0.625rem; /* 10px */
   --background: #000000;
   --foreground: #ffffff;
   --card: #111111;
@@ -191,4 +191,38 @@ table {
     max-width: 100%;
     padding: 0 1rem;
   }
+}
+
+/* Animated Gradient Border */
+@keyframes rotateGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animated-gradient-border {
+  position: relative;
+  border-radius: var(--radius); /* Match the desired border radius */
+  padding: 2px; /* Border thickness */
+  overflow: hidden; /* Ensure gradient stays within bounds */
+  background: transparent; /* Make parent transparent */
+}
+
+.animated-gradient-border::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  z-index: -1; /* Place behind the content */
+  margin: -2px; /* Match the padding */
+  border-radius: inherit; /* Inherit the parent's border radius */
+  background: linear-gradient(135deg, var(--primary), #ffffff, var(--primary));
+  background-size: 400% 400%;
+  animation: rotateGradient 8s ease infinite;
+}
+
+/* Ensure the inner content has a background to cover the gradient center */
+.animated-gradient-border > * {
+  background-color: var(--card-bg); /* Or the desired inner background */
+  border-radius: calc(var(--radius) - 2px); /* Adjust inner radius */
+  /* Add padding back if needed, or apply padding to this inner element */
 }
